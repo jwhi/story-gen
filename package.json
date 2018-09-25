@@ -1,0 +1,15 @@
+{
+  "name": "story-gen",
+  "version": "1.0.0",
+  "description": "Story generator.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jeremy White",
+  "license": "ISC",
+  "dependencies": {
+    "node-rules": "^4.0.2",
+    "readline-sync": "^1.4.9"
+  }
+}
