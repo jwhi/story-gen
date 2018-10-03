@@ -30,7 +30,7 @@ var rules = [{
     },
     "consequence": function (R) {
         this.output += "\x1b[33mTest Your Luck\x1b[0m";
-        this.output += "\nCurrent luck: " + this.luck;
+        this.output += "\nCurrent luck: " + this.player.luck;
         // Have to output here in order to get the pause.
         console.log(this.output);
         this.output = '';
@@ -38,16 +38,16 @@ var rules = [{
         var luckRoll = utility.rollDice(1);
         this.output += "Result: " + luckRoll;
         
-        if (luckRoll <= this.luck) {
+        if (luckRoll <= this.player.luck) {
             this.output += "\n" + this.TestYourLuck["Lucky"][1];
             this.location = this.TestYourLuck["Lucky"][0];
         } else {
             this.output += "\n" + this.TestYourLuck["Unlucky"][1];
             this.location = this.TestYourLuck["Unlucky"][0];
         }
-        if (this.luck > 0) {
+        if (this.player.luck > 0) {
             this.output += "\nSubtract one from luck.";
-            this.luck -= 1;
+            this.player.luck -= 1;
         }
         this.TestYourLuck = {};
         this.routes = {};

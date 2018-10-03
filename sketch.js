@@ -24,31 +24,32 @@
 const RuleEngine = require("node-rules");
 const storyRules = require("./StoryRules.js");
 const gameRules = require("./GameRules.js");
+const c = require("./Character.js");
 
 /* Creating Rule Engine instance */
 var R = new RuleEngine();
 
 /* Register Rules */
 R.register(gameRules.rules);
-R.register(storyRules.rules);
+R.register(storyRules.LFrules);
+var player = new c.Character()
 
 /* Add a Fact with the player's information */
 var fact = {
-    "name": "Urist",
+    "player": player,
     "location": 1,
     "end": false,
     "routes": {},
     "TestYourLuck": {},
-    "skill": 10,
-    "stamina": 10,
-    "luck": 10,
-    "initialSkill": 10,
-    "initialStamina": 10,
-    "initialLuck": 10
+    "day": 0,
+    "time": 0,
+    "output": '',
+    "action": 'sleep'
 };
 
 /* Check if the engine blocks it! */
 R.execute(fact, function (data) {
+    console.log(data.output)
     if (data.end) {
         console.log("The end!");
     }
