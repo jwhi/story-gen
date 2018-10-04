@@ -1,129 +1,190 @@
 const utility = require("./utility.js");
+const Constants = require("./constants.js").Constants;
 
 var rules = [{
+    "name": "Fall_Asleep",
+	"priority": 2,
+	"on" : true,
     "condition": function (R) {
-        R.when(this.location == 1);
+        R.when(this.time == 23);
     },
     "consequence": function (R) {
-        this.output = "You peer into the gloom to see dark, slimy walls with pools of water on the stone floor in front of you. The air is cold and dank. You light your lantern and step warily into the blackness. Cobwebs brush your face and you hear the scurrying of tiny feet: rats, most likely. You set off into the cave. After a few yards you arrive at a junction.";
-        this.routes["east"] = 71;
-        this.routes["west"] = 278;
+        this.action = Constants.Actions.Sleep
+        this.output += "You fall asleep."
+        this.time += 1;
         R.restart();
     }
-}, {
+},{
+    "name": "End_After_1_Day",
+    "priority": 11,
+    "on" : true,
     "condition": function (R) {
-        R.when(this.location == 71)
-    },
-    "consequence": function (R) {
-        this.output = "There is a right-hand turn to the north in the passage. Cautiously you approach a sentry post on the corner and, as you look in, you can see a strange Goblin-like creature in leather armour sleep at his post. You try to tiptoe past him.";
-        this.TestYourLuck["Lucky"] = [301, "You are Lucky, he does not wake up and remains snoring loudly."];
-        this.TestYourLuck["Unlucky"] = [248, "You are Unlucky, you step with a crunch on some loose ground and his eyes flick open."];
-        R.restart()
-    }
-}, {
-    "condition": function (R) {
-        R.when(this.location == 301)
-    },
-    "consequence": function (R) {
-        // Not yet implemented
-        this.output = "There is a right-hand turn to the north in the passage...."
-        this.end = true;
-        R.restart()
-    }
-}, {
-    "condition": function (R) {
-        R.when(this.location == 248)
-    },
-    "consequence": function (R) {
-        // Not yet implemented
-        this.output = "There is a right-hand turn to the north in the passage...."
-        this.end = true;
-        R.restart()
-    }
-}, {
-    "condition": function (R) {
-        R.when(this.location == 278)
-    },
-    "consequence": function (R) {
-        this.output = "The passageway soon comes to an end at a locked woodeen door..."
-        this.end = true;
-        R.restart()
-    }
-}];
-
-var LFrules = [{
-    "condition": function (R) {
-        R.when(this.day >= 3);
+        R.when(this.day >= 1);
     },
     "consequence": function (R) {
         R.stop();
     }
 },{
+    "name": "Wake_Trigger",
+    "priority": 9,
+    "on" : true,
+    "condition": function (R) {
+        R.when(this.time == 7);
+    },
+    "consequence": function (R) {
+        this.output += "You wake up. ";
+        this.action = Constants.Actions.NotSet;
+        this.output += "Your stamina is now " + this.player.stamina;
+        this.time += 1;
+        R.restart();
+    }
+}, {
+    "name": "Sleep",
+	"priority": 2,
+	"on" : true,
+    "condition": function(R) {
+        R.when(this.action == Constants.Actions.Sleep);
+    },
+    "consequence": function(R) {
+        if (this.player.stamina < this.player.initialStamina) {
+            this.player.stamina += Constants.Stamina.GainedPerHourOfSleep;
+        } else {
+            this.player.stamina = this.player.initialStamina;
+        }
+        this.player.hunger -= Constants.Hunger.PerHourSleeping;
+        this.output += timeFormat(this.time) + ": Sleep time.\t" + this.time;
+        this.time += 1;
+        R.restart();
+    }
+},{
+    "name": "Hunger_Trigger",
+    "priority": 1,
+    "on" : true,
+    "condition": function(R) {
+        // When food is low or another rule set player's action to FindFood
+        // FindFood set if player is starving.
+        R.when((this.player.provisions <= Constants.Provisions.StartSearch || this.action == Constants.Actions.FindFood) && this.action != Constants.Actions.Forage);
+    },
+    "consequence": function(R) {
+        /*
+         * Logic will go here to determine what the character needs to do
+         * If near forest and can hunt, then will hunt for food.
+         * Have money and market/barker in town? Can buy food.
+         * If no skills or money, there's always foraging or begging.
+         */
+        this.output += "You are feeling hungry. You need to find food.";
+        this.action = Constants.Actions.Forage;
+        this.time += 0
+        R.restart();
+    }
+},{
+    "name": "Eat",
+	"priority": 1,
+	"on" : true,
+    "condition": function(R) {
+       // If the player is starving and not doing anything, they need to do something to fix their hunger.
+       R.when(this.player.hunger <= Constants.Hunger.Starving && this.action == Constants.Actions.NotSet);
+   },
+   "consequence": function (R) {
+        this.output += timeFormat(this.time) + ": You are hungry. ";
+        if (this.player.provisions >= 1) {
+            this.output += "You eat some of your food supplies.";
+            this.player.hunger += 1;
+            this.player.provisions -= 1;
+        } else if (this.player.provisions > 0) {
+            this.output += "You don't have any food stored, but you find some crumbs in your bag.";
+            this.player.hunger += this.player.provisions;
+            this.player.provisions = 0;
+            this.action = Constants.Actions.FindFood;
+        } else {
+            this.output += "You have no food. You need to find a way to get some food.";
+            // Set player's provision to 0 in case there was a point where they somehow ate more than they had.
+            this.player.provisions = 0;
+            this.action = Constants.Actions.FindFood;
+        }
+        R.restart();
+   }
+}, {
+    "name": "Lunch",
+	"priority": 1,
+	"on" : true,
     "condition": function (R) {
         R.when(this.time == 12);
     },
-    "consequence": function(R) {
+    "consequence": function (R) {
         this.time += 1;
-        if (this.player.provisions >= 1) {
+        if (this.player.provisions >= Constants.Provisions.EatenPerMeal) {
             this.output += "Have some lunch!"
-            this.player.provisions -= 1;
+            this.player.hunger += Constants.Provisions.EatenPerMeal;
+            this.player.provisions -= Constants.Provisions.EatenPerMeal;
         } else {
             this.output += "You have to skip lunch because you have no food."
         }
         R.restart();
     }
 },{
-    "condition": function (R) {
-        R.when(this.time == 8);
-    },
-    "consequence": function (R) {
-        this.output += "You wake up. ";
-        this.action = '';
-        this.time += 1;
-        R.restart();
-    }
-},{
+    "name": "Forage",
+	"priority": 1,
+	"on" : true,
     "condition": function(R) {
-        R.when(this.action == "forage")
+        R.when(this.action == Constants.Actions.Forage)
     },
     "consequence": function(R) {
         this.output += timeFormat(this.time) + ": You run to the fields next to your house. It is a " + ((this.time < 1200) ? "chilly morning." : ((this.time < 1700) ? "lovely afternoon." : "dark night."));
-        this.action = '';
-        this.time += 2;
-        var provisions = utility.rollDice(1,4);
-        this.output += " " + (provisions == 5 ? "You were barely able to find any food." : (provisions == 10 ? "You had a very successful forage!" : "You managed to find some food."));
+        this.action = Constants.Actions.NotSet;
+        this.time += Constants.Duration.Forage;
+        var provisions = utility.rollDice(Constants.Provisions.ForagingDiceCount, Constants.Provisions.ForagingModifier);
+        
+        switch (provisions) {
+            case (Constants.Provisions.ForagingDiceCount + Constants.Provisions.ForagingModifier):
+                // Rolled a 1 on foraging dice rolls.
+                this.output += "You were barely able to find any food.";
+                break;
+            case (Constants.Provisions.ForagingDiceCount*6 + Constants.Provisions.ForagingModifier):
+                // Rolled a 6 on foraging dice rolls.
+                this.output += "You had a very successful forage!";
+                break;
+            default:
+                this.output += "You managed to find some food.";
+                break;
+        }
         this.player.provisions += provisions;
         R.restart();
     }
 },{
-    "condition": function(R) {
-        R.when(this.player.provisions < 3 && this.action == '');
-    },
-    "consequence": function(R) {
-        this.output += "You are feeling hungry. You need to find food.";
-        this.action = "forage"
-        this.time += 0
-        R.restart();
-    }
-},{
+    "name": "Fall_Asleep",
+	"priority": 12,
+	"on" : true,
     "condition": function(R) {
         R.when(this.time >= 23)
     },
     "consequence": function(R) {
+        // End of the day. Reset timers.
         this.time = 0;
         this.day += 1;
-        console.log("Player stamina: " + this.player.stamina + '/' + this.player.initialStamina)
+        this.player.stamina = Math.trunc(this.player.stamina);
+        this.player.hunger = Math.trunc(this.player.hunger);
+        this.output += "Player stamina: " + this.player.stamina + '/' + this.player.initialStamina;
         this.player.stamina = this.player.initialStamina
-        console.log("End of day " + this.day)
+        this.output += "\nEnd of day " + this.day;
         R.restart();
     }
 },{
+    "name": "PassTime",
+	"priority": 1,
+	"on" : true,
     "condition": function (R) {
         R.when(this.time >= 0);
     },
     "consequence": function (R) {
+        /*
+         * Whenever a character couldn't find anything to do:
+         * - increment the time by one (hour)
+         * - Reduce stamina by certain amount.
+         * - Reduce Hunger. Starving when <= 2.
+         */
         this.time += 1;
-        this.player.provisions -= (this.time < 12 ? .3 : .5);
+        this.player.hunger -= (this.time < 12 ? Constants.Hunger.PerHourMorning : Constants.Hunger.PerHourEvening);
         this.player.stamina -= .9
         R.restart();
     }
@@ -133,4 +194,4 @@ function timeFormat(time) {
     return (time > 12 ? time-12 + ':00PM' : time + ':00AM')
 }
 
-module.exports = {rules, LFrules}
+module.exports = {rules}

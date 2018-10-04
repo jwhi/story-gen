@@ -1,3 +1,4 @@
+"use strict";
 /******************
   * COPYRIGHT NOTICE:
   * Current game systems and text is from 'Fighting Fantasy 1: The Warlock of Firetop Mountain'
@@ -31,7 +32,7 @@ var R = new RuleEngine();
 
 /* Register Rules */
 R.register(gameRules.rules);
-R.register(storyRules.LFrules);
+R.register(storyRules.rules);
 var player = new c.Character()
 
 /* Add a Fact with the player's information */
@@ -44,13 +45,10 @@ var fact = {
     "day": 0,
     "time": 0,
     "output": '',
-    "action": 'sleep'
+    "action": 3 // Sleep
 };
 
 /* Check if the engine blocks it! */
 R.execute(fact, function (data) {
-    console.log(data.output)
-    if (data.end) {
-        console.log("The end!");
-    }
+    console.log(data);
 });

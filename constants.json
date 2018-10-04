@@ -1,0 +1,29 @@
+{
+    "Provisions": {
+        "ForagingDiceCount": 1,
+        "ForagingModifier": 4,
+        "EatenPerMeal": 1,
+        "StartSearch": 2    
+    },
+    "Stamina": {
+        "LossPerHour": 0.9,
+        "GainedFromFood": 2,
+        "GainedPerHourOfSleep": 1
+    },
+    "Duration": {
+        "Forage": 2
+    },
+    "Hunger": {
+        "Initial": 4,
+        "PerHourMorning": 0.3,
+        "PerHourEvening": 0.5,
+        "PerHourSleeping": 0.2,
+        "Starving": 2
+    },
+    "Actions": {
+        "NotSet": 0,
+        "FindFood": 1,
+        "Forage": 2,
+        "Sleep": 3
+    }
+}

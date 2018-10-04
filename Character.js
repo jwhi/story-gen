@@ -1,5 +1,6 @@
 "use strict";
 const utility = require('./utility.js')
+const Constants = require("./constants.js").Constants;
 
 /* DND
 class Character {
@@ -97,10 +98,11 @@ class Class {
 class Character {
     constructor(skill, stamina, luck) {
         this.gold = 0;
-        this.jewels = {};
-        this.potions = {};
+        //this.jewels = {};
+        //this.potions = {};
         this.provisions = 0;
-        this.equipment = {};
+        this.hunger = Constants.Hunger.Initial;
+        //this.equipment = {};
         if (!skill) {
             this.initialSkill = utility.rollDice(1,6);
         } else {

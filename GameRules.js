@@ -16,6 +16,9 @@ const utility = require("./utility.js");
  *****************/
 
 var rules = [{
+    "name": "Output",
+	"priority": 10,
+	"on" : true,
     "condition": function (R) {
         R.when(this.output);
     },
@@ -64,14 +67,6 @@ var rules = [{
         R.restart();
     }
     
-},{
-    "condition": function (R) {
-        R.when(this.end);
-    },
-    "consequence": function (R) {
-        this.location = 0;
-        R.stop();
-    }
 }];
 
 module.exports = {rules}
