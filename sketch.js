@@ -50,5 +50,5 @@ var fact = {
 
 /* Check if the engine blocks it! */
 R.execute(fact, function (data) {
-    console.log(data);
+    console.log(data.player);
 });

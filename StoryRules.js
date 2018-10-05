@@ -2,26 +2,15 @@ const utility = require("./utility.js");
 const Constants = require("./constants.js").Constants;
 
 var rules = [{
-    "name": "Fall_Asleep",
-	"priority": 2,
-	"on" : true,
-    "condition": function (R) {
-        R.when(this.time == 23);
-    },
-    "consequence": function (R) {
-        this.action = Constants.Actions.Sleep
-        this.output += "You fall asleep."
-        this.time += 1;
-        R.restart();
-    }
-},{
-    "name": "End_After_1_Day",
+    "name": "End_After_3_Day",
     "priority": 11,
     "on" : true,
     "condition": function (R) {
-        R.when(this.day >= 1);
+        R.when(this.day >= 3);
     },
     "consequence": function (R) {
+        console.log(this.output);
+        this.output = "";
         R.stop();
     }
 },{
@@ -40,7 +29,7 @@ var rules = [{
     }
 }, {
     "name": "Sleep",
-	"priority": 2,
+	"priority": 8,
 	"on" : true,
     "condition": function(R) {
         R.when(this.action == Constants.Actions.Sleep);
@@ -58,7 +47,7 @@ var rules = [{
     }
 },{
     "name": "Hunger_Trigger",
-    "priority": 1,
+    "priority": 4,
     "on" : true,
     "condition": function(R) {
         // When food is low or another rule set player's action to FindFood
@@ -79,7 +68,7 @@ var rules = [{
     }
 },{
     "name": "Eat",
-	"priority": 1,
+	"priority": 2,
 	"on" : true,
     "condition": function(R) {
        // If the player is starving and not doing anything, they need to do something to fix their hunger.
@@ -106,31 +95,31 @@ var rules = [{
    }
 }, {
     "name": "Lunch",
-	"priority": 1,
+	"priority": 4,
 	"on" : true,
     "condition": function (R) {
         R.when(this.time == 12);
     },
     "consequence": function (R) {
-        this.time += 1;
         if (this.player.provisions >= Constants.Provisions.EatenPerMeal) {
-            this.output += "Have some lunch!"
+            this.output += timeFormat(this.time) + ": Have some lunch!"
             this.player.hunger += Constants.Provisions.EatenPerMeal;
             this.player.provisions -= Constants.Provisions.EatenPerMeal;
         } else {
-            this.output += "You have to skip lunch because you have no food."
+            this.output += timeFormat(this.time) + ": You have to skip lunch because you have no food."
         }
+        this.time += 1;
         R.restart();
     }
 },{
     "name": "Forage",
-	"priority": 1,
+	"priority": 2,
 	"on" : true,
     "condition": function(R) {
         R.when(this.action == Constants.Actions.Forage)
     },
     "consequence": function(R) {
-        this.output += timeFormat(this.time) + ": You run to the fields next to your house. It is a " + ((this.time < 1200) ? "chilly morning." : ((this.time < 1700) ? "lovely afternoon." : "dark night."));
+        this.output += timeFormat(this.time) + ": You run to the fields next to your house. It is a " + ((this.time < 12) ? "chilly morning." : ((this.time < 17) ? "lovely afternoon." : "dark night."));
         this.action = Constants.Actions.NotSet;
         this.time += Constants.Duration.Forage;
         var provisions = utility.rollDice(Constants.Provisions.ForagingDiceCount, Constants.Provisions.ForagingModifier);
@@ -164,9 +153,10 @@ var rules = [{
         this.day += 1;
         this.player.stamina = Math.trunc(this.player.stamina);
         this.player.hunger = Math.trunc(this.player.hunger);
-        this.output += "Player stamina: " + this.player.stamina + '/' + this.player.initialStamina;
+        this.output += "You fall asleep. Player stamina: " + this.player.stamina + '/' + this.player.initialStamina;
         this.player.stamina = this.player.initialStamina
         this.output += "\nEnd of day " + this.day;
+        this.action = Constants.Actions.Sleep;
         R.restart();
     }
 },{
@@ -191,6 +181,7 @@ var rules = [{
 }];
 
 function timeFormat(time) {
+    (time == 0 || time == 12 ? time += 12 : time)
     return (time > 12 ? time-12 + ':00PM' : time + ':00AM')
 }
 

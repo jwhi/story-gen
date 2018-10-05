@@ -1,7 +1,7 @@
 {
     "Provisions": {
         "ForagingDiceCount": 1,
-        "ForagingModifier": 4,
+        "ForagingModifier": 2,
         "EatenPerMeal": 1,
         "StartSearch": 2    
     },
