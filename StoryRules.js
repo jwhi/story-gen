@@ -41,7 +41,7 @@ var rules = [{
             this.player.stamina = this.player.initialStamina;
         }
         this.player.hunger -= Constants.Hunger.PerHourSleeping;
-        this.output += timeFormat(this.time) + ": Sleep time.\t" + this.time;
+        //this.output += timeFormat(this.time) + ": Sleep time.\t" + this.time;
         this.time += 1;
         R.restart();
     }
@@ -76,13 +76,13 @@ var rules = [{
    },
    "consequence": function (R) {
         this.output += timeFormat(this.time) + ": You are hungry. ";
-        if (this.player.provisions >= 1) {
+        if (this.player.provisions >= Constants.Provisions.EatenPerSnack) {
             this.output += "You eat some of your food supplies.";
-            this.player.hunger += 1;
-            this.player.provisions -= 1;
+            this.player.hunger += Constants.Provisions.EatenPerSnack * Constants.Hunger.GainedFromProvision;
+            this.player.provisions -= Constants.Provisions.EatenPerSnack;
         } else if (this.player.provisions > 0) {
             this.output += "You don't have any food stored, but you find some crumbs in your bag.";
-            this.player.hunger += this.player.provisions;
+            this.player.hunger += this.player.provisions * Constants.Hunger.GainedFromProvision;
             this.player.provisions = 0;
             this.action = Constants.Actions.FindFood;
         } else {
@@ -91,6 +91,9 @@ var rules = [{
             this.player.provisions = 0;
             this.action = Constants.Actions.FindFood;
         }
+        this.player.hunger = Math.round(this.player.hunger);
+        this.output += " Current hunger: " + this.player.hunger;
+        this.time += 1
         R.restart();
    }
 }, {

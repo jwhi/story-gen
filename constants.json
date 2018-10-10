@@ -1,8 +1,9 @@
 {
     "Provisions": {
         "ForagingDiceCount": 1,
-        "ForagingModifier": 2,
-        "EatenPerMeal": 1,
+        "ForagingModifier": 5,
+        "EatenPerMeal": 3,
+        "EatenPerSnack": 2,
         "StartSearch": 2    
     },
     "Stamina": {
@@ -18,7 +19,8 @@
         "PerHourMorning": 0.3,
         "PerHourEvening": 0.5,
         "PerHourSleeping": 0.2,
-        "Starving": 2
+        "Starving": 2,
+        "GainedFromProvision": 2
     },
     "Actions": {
         "NotSet": 0,
