@@ -1,0 +1,23 @@
+[{
+    "TownID": 1,
+    "TownName": "Bristol",
+    "_comment1": "Bristol founded: 1542. Bristol castle: First mentioned 1088",
+    "_comment2": "Church: St Augustine's Abbey. Founded: 1440. Consecrated: 1148 Cathedral Nave: 1877",
+    "_comment3": "Mint, Maritime connections to Wales, Ireland, Iceland, western France, Spain, and Portugal",
+    "_comment4": "Trade: wool, fish, wine, and grain"
+},{
+    "TownID": 2,
+    "TownName": "Bath"
+},{
+    "TownID": 3,
+    "TownName": "Wells"
+},{
+    "TownID": 4,
+    "TownName": "Glastonbury"
+},{
+    "TownID": 5,
+    "TownName": "Axbridge"
+},{
+    "TownID": 6,
+    "TownName": "Wellington"
+}]

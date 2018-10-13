@@ -11,7 +11,9 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "node-rules": "^4.0.2",
-    "readline-sync": "^1.4.9"
+    "npm": "^6.4.1",
+    "readline-sync": "^1.4.9",
+    "sqlite3": "^4.0.2"
   },
   "repository": {
     "type": "git",

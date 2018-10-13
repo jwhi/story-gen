@@ -27,5 +27,8 @@
         "FindFood": 1,
         "Forage": 2,
         "Sleep": 3
+    },
+    "Magic": {
+        "Heal": 0
     }
 }

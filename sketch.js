@@ -11,7 +11,7 @@
  * 
  * Project is being done for a senior project course for Kansas State University.
  * Drawing inspiration from my favorite games and books to create dynamic and memorable
- * narrative experiences for players.
+ * narrative experiences for users.
  *****************/
 
 /******************
@@ -23,8 +23,8 @@
  *****************/
 
 const RuleEngine = require("node-rules");
-const storyRules = require("./StoryRules.js");
-const gameRules = require("./GameRules.js");
+const storyRules = require("./rules/StoryRules.js");
+const gameRules = require("./rules/GameRules.js");
 const c = require("./Character.js");
 
 /* Creating Rule Engine instance */
@@ -33,11 +33,11 @@ var R = new RuleEngine();
 /* Register Rules */
 R.register(gameRules.rules);
 R.register(storyRules.rules);
-var player = new c.Character()
+var protagonist = new c.Character()
 
-/* Add a Fact with the player's information */
+/* Add a Fact with the protagonist's information */
 var fact = {
-    "player": player,
+    "protagonist": protagonist,
     "location": 1,
     "end": false,
     "routes": {},
@@ -50,5 +50,5 @@ var fact = {
 
 /* Check if the engine blocks it! */
 R.execute(fact, function (data) {
-    console.log(data.player);
+    console.log(data.protagonist);
 });
