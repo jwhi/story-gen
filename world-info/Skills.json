@@ -1,6 +1,6 @@
 [{
     "SkillID": 1,
-    "SkillName": "",
+    "SkillName": "Heal",
     "ClassID": 1,
-    "_comment": ""
+    "_comment": "Heals light wounds."
 }]

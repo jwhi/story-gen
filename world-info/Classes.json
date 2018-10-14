@@ -1,5 +1,55 @@
 [{
     "ClassID": 1,
-    "ClassName": "",
-    "_comment": ""
+    "ClassName": "Fighter",
+    "PreferredTownType": 40,
+    "SecondaryTownType": 0,
+    "_comment": "Probably part of the town guard."
+},{
+    "ClassID": 2,
+    "ClassName": "Thief",
+    "PreferredTownType": 40,
+    "SecondaryTownType": 0,
+    "_comment": "Thiefs prefer the city since it provides more space for them to hide and more places to steal from."
+},{
+    "ClassID": 3,
+    "ClassName": "Wizard",
+    "PreferredTownType": 20,
+    "SecondaryTownType": 10,
+    "_comment": "Prefers small towns and villages. Probably will change."
+},{
+    "ClassID": 4,
+    "ClassName": "Priest",
+    "PreferredTownType": 42,
+    "SecondaryTownType": 0,
+    "_comment": "Priests are of a higher social rank so they will only be found in cathedral cities."
+},{
+    "ClassID": 5,
+    "ClassName": "Monk",
+    "PreferredTownType": 30,
+    "SecondaryTownType": 42,
+    "_comment": "Monks are usually a part of modest monastary, but they can also be found in cathedral cities assisting the church."
+},{
+    "ClassID": 6,
+    "ClassName": "Bard",
+    "PreferredTownType": 40,
+    "SecondaryTownType": 20,
+    "_comment": "Bards are wherever they can entertain for some coin."
+},{
+    "ClassID": 7,
+    "ClassName": "Healer",
+    "PreferredTownType": 20,
+    "SecondaryTownType": 10,
+    "_comment": "Imagined them being a small town/village herbalist."
+},{
+    "ClassID": 8,
+    "ClassName": "Barbarian",
+    "PreferredTownType": 60,
+    "SecondaryTownType": 0,
+    "_comment": "Outlaws that have formed a gang and have a camp."
+},{
+    "ClassID": 9,
+    "ClassName": "Druid",
+    "PreferredTownType": 10,
+    "SecondaryTownType": 20,
+    "_comment": "A carekeeper for the forests. Prefer small villages or towns."
 }]

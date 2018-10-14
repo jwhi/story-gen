@@ -1,0 +1,40 @@
+[{
+    "TownTypeID": 10,
+    "TownTypeDescription": "Village",
+    "_comment": "Small town without a market"
+},{
+    "TownTypeID": 20,
+    "TownTypeDescription": "Town",
+    "_comment": "Large village that can support a market"
+},{
+    "TownTypeID": 30,
+    "TownTypeDescription": "Monastary",
+    "_comment": "Monastary with a small group of monks. Isolated in an area where they tend the land and have traveling traders."
+},{
+    "TownTypeID": 31,
+    "TownTypeDescription": "Monastic Village",
+    "_comment": "Small monastary with a town attatched"
+},{
+    "TownTypeID": 35,
+    "TownTypeDescription": "Monastary with river"
+},{
+    "TownTypeID": 40,
+    "TownTypeDescription": "City",
+    "_comment": "Large crowded city with different districts."
+},{
+    "TownTypeID": 41,
+    "TownTypeDescription": "Walled City",
+    "_comment": "Same thing as a city but has walled defenses surrounding city."
+},{
+    "TownTypeID": 42,
+    "TownTypeDescription": "Cathedral City",
+    "_comment": "A large city with a cathedral."
+},{
+    "TownTypeID": 50,
+    "TownTypeDescription": "Stronghold",
+    "_comment": "A manor house surrounded by walls with small homes around the walls."
+},{
+    "TownTypeID": 60,
+    "TownTypeDescription": "Barbarian Camp",
+    "_comment": "Similar to a stronghold but filled with maruaders."
+}]
