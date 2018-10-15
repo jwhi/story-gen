@@ -1,6 +1,11 @@
 [{
     "SkillID": 1,
     "SkillName": "Heal",
-    "ClassID": 1,
+    "ClassID": 7,
     "_comment": "Heals light wounds."
+},{
+    "SkillID": 2,
+    "SkillName": "Cleave",
+    "ClassID": 1,
+    "_comment": "Attack more than 1 surrounding enemy."
 }]
