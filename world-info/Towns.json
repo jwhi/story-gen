@@ -3,6 +3,7 @@
     "TownName": "Bristol",
     "TownDescription": "",
     "TownTypeID": 40,
+    "TimesUsed": 0,
     "_comment1": "Bristol founded: 1542. Bristol castle: First mentioned 1088",
     "_comment2": "Church: St Augustine's Abbey. Founded: 1440. Consecrated: 1148 Cathedral Nave: 1877",
     "_comment3": "Mint, Maritime connections to Wales, Ireland, Iceland, western France, Spain, and Portugal",
@@ -12,28 +13,34 @@
     "TownName": "Bath",
     "TownDescription": "",
     "TownTypeID": 41,
+    "TimesUsed": 0,
     "_comment": "I believe it has a cathedral too, but might be the same one as Wells. Need to do more research."
 },{
     "TownID": 3,
     "TownName": "Wells",
     "TownDescription": "",
     "TownTypeID": 42,
+    "TimesUsed": 0,
     "_comment": "Wells has a lot of medieval structures still standing."
 },{
     "TownID": 4,
     "TownName": "Glastonbury",
     "TownDescription": "",
     "TownTypeID": 35,
+    "TimesUsed": 0,
     "_comment": "Glastonbury Abbey and canal. Canal used to transport stone to build the abbey and late deliver goods."
 },{
     "TownID": 5,
     "TownName": "Axbridge",
     "TownDescription": "",
     "TownTypeID": 40,
+    "TimesUsed": 0,
     "_comment": "Still has a number of historical buildings. Large church."
 },{
     "TownID": 6,
     "TownName": "Wellington",
     "TownDescription": "",
-    "TownTypeID": 20
+    "TownTypeID": 20,
+    "TimesUsed": 0,
+    "_comment": ""
 }]

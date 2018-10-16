@@ -18,9 +18,9 @@ db.serialize(function() {
     db.run("DROP TABLE IF EXISTS Skills;");
     db.run("DROP TABLE IF EXISTS Classes;");
 
-    db.run("CREATE TABLE Towns (TownID INT NOT NULL, TownName TEXT NOT NULL, TownDescription TEXT NOT NULL, TownTypeID INT NOT NULL, PRIMARY KEY(TownID));")
+    db.run("CREATE TABLE Towns (TownID INT NOT NULL, TownName TEXT NOT NULL, TownDescription TEXT NOT NULL, TownTypeID INT NOT NULL, TimesUsed INT NOT NULL, PRIMARY KEY(TownID));")
     db.run("CREATE TABLE TownTypes (TownTypeID INT NOT NULL, TownTypeDescription TEXT NOT NULL, PRIMARY KEY(TownTypeID));")
-    db.run("CREATE TABLE Trainers (TrainerID INT NOT NULL, TownID INT NOT NULL, SkillID INT NOT NULL, PRIMARY KEY(TrainerID));");
+    db.run("CREATE TABLE Trainers (TrainerID INT NOT NULL, TrainerName TEXT, TownID INT NOT NULL, SkillID INT NOT NULL, TrainerDescription, PRIMARY KEY(TrainerID));");
     db.run("CREATE TABLE Skills (SkillID INT NOT NULL, SkillName TEXT NOT NULL, ClassID INT NOT NULL, PRIMARY KEY(SkillID));");
     db.run("CREATE TABLE Classes (ClassID INT NOT NULL, ClassName TEXT NOT NULL, PreferredTownType INT NOT NULL, SecondaryTownType INT, PRIMARY KEY(ClassID));")
 
@@ -59,17 +59,18 @@ db.serialize(function() {
     var TownsJSON = fs.readFileSync(path.join(infoPath, 'Towns.json'));
     var Towns = JSON.parse(TownsJSON);
     for (var i = 0; i < Towns.length; i++) {
-        db.run("INSERT INTO Towns (TownID, TownName, TownDescription, TownTypeID) VALUES ($TownID, $TownName, $TownDescription, $TownTypeID);", {
+        db.run("INSERT INTO Towns (TownID, TownName, TownDescription, TownTypeID, TimesUsed) VALUES ($TownID, $TownName, $TownDescription, $TownTypeID, $TimesUsed);", {
             $TownID: Towns[i].TownID,
             $TownName: Towns[i].TownName,
             $TownDescription: Towns[i].TownDescription,
-            $TownTypeID: Towns[i].TownTypeID
+            $TownTypeID: Towns[i].TownTypeID,
+            $TimesUsed: Towns[i].TimesUsed
         });
     }
     /*
     Trainers:
     In order to learn skills, the character will need to see a trainer. Each trainer has
-    one school they teach and only reside in one town. No name since those will be story specific (at least for the time being).
+    one skill they teach and only reside in one town. Names will be story specific, but some trainers can have set names.
         TrainerID: Unique identifer for each trainer
         TownID: The town where the trainer is located.
         SkillID: The identifer of the skill they can train the character in.
@@ -77,10 +78,12 @@ db.serialize(function() {
     var TrainersJSON = fs.readFileSync(path.join(infoPath, 'Trainers.json'));
     var Trainers = JSON.parse(TrainersJSON);
     for (var i = 0; i < Trainers.length; i++) {
-        db.run("INSERT INTO Trainers (TrainerID, TownID, SkillID) VALUES ($TrainerID, $TownID, $SkillID);", {
+        db.run("INSERT INTO Trainers (TrainerID, TrainerName, TownID, SkillID, TrainerDescription) VALUES ($TrainerID, $TrainerName, $TownID, $SkillID, $TrainerDescription);", {
             $TrainerID: Trainers[i].TrainerID,
+            $TrainerName: Trainers[i].TrainerName,
             $TownID: Trainers[i].TownID,
-            $SkillID: Trainers[i].SkillID
+            $SkillID: Trainers[i].SkillID,
+            $TrainerDescription: Trainers[i].TrainerDescription
         });
     }
     /*

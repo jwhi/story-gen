@@ -1,6 +1,8 @@
 [{
     "TrainerID": 1,
+    "TrainerName": "",
     "TownID": 1,
     "SkillID": 1,
+    "TrainerDescription": "",
     "_comment": ""
 }]
