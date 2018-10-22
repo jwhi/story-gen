@@ -2,9 +2,8 @@
 const utility = require('./rules/utility.js')
 const Constants = require("./constants.js").Constants;
 
-/* DND
 class Character {
-    constructor(name, strength, dexterity, constitution, intelligence, wisdom, charisma) {
+    constructor(name, strength, dexterity, constitution, intelligence, wisdom, charisma, skill, stamina, luck) {
         this.name = name;
         this.strength = strength;
         this.dexterity = dexterity;
@@ -12,11 +11,34 @@ class Character {
         this.intelligence = intelligence;
         this.wisdom = wisdom;
         this.charisma = charisma;
+        this.provisions = 0;
+        this.hunger = Constants.Hunger.Initial;
         this.xp = 0;
-        this.race = new Race("Dwarf")
-        this.class = new Class("Barbarian")
+        this.class = new Class("Fighter")
         this.skills = {}
         this.maxHealth = this.class.hitDie + this.constitutionModifier;
+        
+        if (!skill) {
+            this.initialSkill = utility.rollDice(1,6);
+        } else {
+            this.initialSkill = skill;
+        }
+        this.skill = this.initialSkill;
+
+        if (!stamina) {
+            this.initialStamina = utility.rollDice(2,12);
+        } else {
+            this.initialStamina = stamina;
+        }
+        this.stamina = this.initialStamina;
+
+        if (!luck) {
+            this.initialLuck = utility.rollDice(1,6);
+        } else {
+            this.initialLuck = luck;
+        }
+        this.luck = this.initialLuck;
+    
     }
 
     // Skill modifier method
@@ -55,21 +77,6 @@ class Character {
 
 }
 
-class Race {
-    constructor(name) {
-        this.name = name;
-        this.size = "";
-        this.speed = 1;
-        this.skills = {};
-
-        switch (name) {
-            case 'Dwarf':
-                this.size =  "Medium";
-                this.speed = 25;
-        }
-    }
-}
-
 class Class {
     constructor(name) {
         this.hitDie = 8;
@@ -93,44 +100,5 @@ class Class {
     }
 
 }
-*/
 
-class Character {
-    constructor(skill, stamina, luck) {
-        this.gold = 0;
-        //this.jewels = {};
-        //this.potions = {};
-        this.provisions = 0;
-        this.hunger = Constants.Hunger.Initial;
-        //this.equipment = {};
-        if (!skill) {
-            this.initialSkill = utility.rollDice(1,6);
-        } else {
-            this.initialSkill = skill;
-        }
-        this.skill = this.initialSkill;
-
-        if (!stamina) {
-            this.initialStamina = utility.rollDice(2,12);
-        } else {
-            this.initialStamina = stamina;
-        }
-        this.stamina = this.initialStamina;
-
-        if (!luck) {
-            this.initialLuck = utility.rollDice(1,6);
-        } else {
-            this.initialLuck = luck;
-        }
-        this.luck = this.initialLuck;
-    }
-}
-
-class Monster {
-    constructor(skill, stamina) {
-        this.skill = skill;
-        this.stamina = stamina;
-    }
-}
-
-module.exports = { Character, Monster };
+module.exports = { Character };
