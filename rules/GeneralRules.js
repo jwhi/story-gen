@@ -1,3 +1,15 @@
+/******************
+ * General Rules
+ * by Jeremy White
+ * 
+ * These rules are generic story components that can happen regardless of the protagonist's
+ * location or class.
+ * 
+ * Found in these rules will be the system to do a town change, general time passing story segments,
+ * and anything to keep the story going to ensure the protagonist eventually finds themselves
+ * in the dungeon.
+ *****************/
+
 const utility = require("./utility.js");
 const Constants = require("../constants.js").Constants;
 

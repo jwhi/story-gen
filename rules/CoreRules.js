@@ -1,14 +1,17 @@
+/******************
+ * Core Rules
+ * by Jeremy White
+ * 
+ * These are rules that dealing with the system. Output and input are all handled in these
+ * rules to make sure async functions don't interfere with the rules engine.
+ * 
+ * An assumption is being made that all output is being buffered to the output variable in the
+ * fact and will be displayed once the RuleEngine makes the check that output != null. This
+ * will allow changing output from console.log to another system in the future easier (hopefully).
+ *****************/
+
 const readline = require('readline-sync');
 const utility = require("./utility.js");
-
-
-/******************
- * Assumptions being made:
- * - All output is buffered to an output variable in the
- *     fact and will be displayed once the RuleEngine makes the check that output != null. This
- *     will allow changing output from console.log to another system in the future easier (hopefully).
- * 
- *****************/
 
 var rules = [{
     "name": "Output",
