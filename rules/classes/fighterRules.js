@@ -7,6 +7,8 @@ var rules = [{
     },
     "consequence": function (R) {
         // Add to the story and modify fact here.
+        this.output += "YOU ARE A FIGHTER NOW!";
+        this.disableRules.push("Sample");
         R.restart();
     }
 }];

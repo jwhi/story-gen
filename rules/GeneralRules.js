@@ -12,6 +12,7 @@
 
 const utility = require("./utility.js");
 const Constants = require("../constants.js").Constants;
+const fighterClassRules = require("./classes/fighterRules.js");
 
 var rules = [{
     "name": "End_After_3_Day",
@@ -23,6 +24,7 @@ var rules = [{
     "consequence": function (R) {
         console.log(this.output);
         this.output = "";
+        this.end = true;
         R.stop();
     }
 },{
@@ -124,6 +126,7 @@ var rules = [{
             this.output += timeFormat(this.time) + ": You have to skip lunch because you have no food."
         }
         this.time += 1;
+
         R.restart();
     }
 },{
@@ -172,6 +175,10 @@ var rules = [{
         this.protagonist.stamina = this.protagonist.initialStamina
         this.output += "\nEnd of day " + this.day;
         this.action = Constants.Actions.Sleep;
+
+        if (this.day > 2) {
+            this.addRuleFile.push(fighterClassRules.rules);
+        }
         R.restart();
     }
 },{
@@ -179,7 +186,7 @@ var rules = [{
 	"priority": 1,
 	"on" : true,
     "condition": function (R) {
-        R.when(this.time >= 0);
+        R.when(this.time >= 0 || this.time == 24);
     },
     "consequence": function (R) {
         /*
@@ -191,6 +198,11 @@ var rules = [{
         this.time += 1;
         this.protagonist.hunger -= (this.time < 12 ? Constants.Hunger.PerHourMorning : Constants.Hunger.PerHourEvening);
         this.protagonist.stamina -= .9
+        
+        if (this.time >= 24) {
+            this.day += 1;
+            this.time = 0;
+        }
         R.restart();
     }
 }];

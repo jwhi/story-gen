@@ -28,22 +28,79 @@ var R = new RuleEngine();
 /* Register Rules */
 R.register(coreRules.rules);
 R.register(generalRules.rules);
-var protagonist = new c.Character()
+
+var protagonist = new c.Character("Urist", 10, 10, 10, 10, 10, 10)
 
 /* Add a Fact with the protagonist's information */
-var fact = {
+var initialFact = {
     "protagonist": protagonist,
-    "location": 1,
     "end": false,
-    "routes": {},
-    "TestYourLuck": {},
+    "currentRuleFiles": [],
+    "disableRules": [],
+    "addRuleFile": [],
     "day": 0,
     "time": 0,
     "output": '',
-    "action": 3 // Sleep
+    "action": 3, // Sleep
+    "runTwice": 0
 };
 
 /* Create a story! */
-R.execute(fact, function (data) {
-    //console.log(data.matchPath);
-});
+function StoryEngine(RE, fact) {
+    RE.execute(fact, function (data) {
+        //console.log(data.matchPath)
+        console.log(data.output);
+        if (data.end) {
+            // If this is the end of the story, exit the function
+            console.log("The End.");
+            return;
+        } else {
+            var rulesUpdated = false;
+
+            if (data.addRuleFile.length > 0) {
+                var newRules = data.addRuleFile;
+                RE.init();
+                RE.register(coreRules.rules);
+                RE.register(generalRules.rules);
+                for (var i = 0; i < data.currentRuleFiles.length; i++) {
+                    RE.register(data.currentRuleFiles[i]);
+                }
+                for (var i = 0; i < newRules.length; i++) {    
+                    RE.register("\n\n\n\n\n\n" + newRules[i] + "\n\n\n\n");
+                }
+                console.log(data.disableRules);
+                data.currentRuleFiles.concat(newRules);
+                rulesUpdated = true;
+            }
+            if (data.disableRules.length > 0) {
+                for (var i = 0; i < data.disableRules.length; i++) {
+                    console.log("Disable id: " + data.disableRules[i]);
+                    RE.turn("OFF", {
+                        "name": data.disableRules[i]
+                    });
+                }
+                rulesUpdated = true;
+            }
+            
+            // If there were updates to the rules, run the rule engine again.
+            // If there was not any updates, then we just end the story.
+            if (rulesUpdated) {
+                var newFact = {
+                    "protagonist": data.protagonist,
+                    "end": false,
+                    "currentRuleFiles": data.currentRuleFiles,
+                    "disableRules": [],
+                    "addRuleFile": [],
+                    "day": data.day,
+                    "time": data.time,
+                    "output": data.output,
+                    "action": data.action,
+                };
+
+                StoryEngine(RE, newFact);
+            }
+        }
+    });
+}
+
+StoryEngine(R, initialFact);

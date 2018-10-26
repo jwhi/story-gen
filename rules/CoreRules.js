@@ -30,7 +30,7 @@ var rules = [{
     "priority": 15,
     "on": true,
     "condition": function (R) {
-        R.when(this.updateRules == true);
+        R.when(this.addRuleFile.length > 0 || this.disableRules.length > 0);
     },
     "consequence": function (R) {
         // End the rule engine to update rules
