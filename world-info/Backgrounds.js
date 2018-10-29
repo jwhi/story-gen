@@ -82,6 +82,30 @@ var Soldier = {
             text: "I can stare down a hell hound without flinching.",
             trait: "brave"
         },{
-            
+            text: "I enjoy being strong and like breaking things.",
+            trait: "ogre"
+        },{
+            text: "I face problems head-on. A simple, direct solution is the best path to success.",
+            trait: "focused"
+        }],
+    ideals:
+        [{
+            text: "Our lot is to lay down our lives in defense of others.",
+            alignment: "Good"
+        },{
+            text: "I do what I must and obey just authority.",
+            alignment: "Lawful"
+        },{
+            text: "When people follow orders blindly, they embrace a kind of tyranny.",
+            alignment: "Chaotic"
+        },{
+            text: "In life as in war, the stronger force wins.",
+            alignment: "Evil"
+        }, {
+            text: "Ideals aren't worth killing over or going to war for.",
+            alignment: "Neutral"
+        },{
+            text: "My city, nation, or people are all that matter.",
+            alignment: "Any"
         }]
 }
