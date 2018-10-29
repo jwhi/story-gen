@@ -1,6 +1,6 @@
 var rules = [{
     "name": "Sample",
-	"priority": 0,
+	"priority": 5,
 	"on" : true,
     "condition": function (R) {
         R.when(this.protagonist);

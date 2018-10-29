@@ -176,7 +176,8 @@ var rules = [{
         this.output += "\nEnd of day " + this.day;
         this.action = Constants.Actions.Sleep;
 
-        if (this.day > 2) {
+        // Testing adding rules to the rule engine.
+        if (this.day == 1) {
             this.addRuleFile.push(fighterClassRules.rules);
         }
         R.restart();

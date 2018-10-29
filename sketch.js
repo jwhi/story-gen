@@ -49,7 +49,6 @@ var initialFact = {
 function StoryEngine(RE, fact) {
     RE.execute(fact, function (data) {
         //console.log(data.matchPath)
-        console.log(data.output);
         if (data.end) {
             // If this is the end of the story, exit the function
             console.log("The End.");
@@ -66,15 +65,13 @@ function StoryEngine(RE, fact) {
                     RE.register(data.currentRuleFiles[i]);
                 }
                 for (var i = 0; i < newRules.length; i++) {    
-                    RE.register("\n\n\n\n\n\n" + newRules[i] + "\n\n\n\n");
+                    RE.register(newRules[i]);
                 }
-                console.log(data.disableRules);
                 data.currentRuleFiles.concat(newRules);
                 rulesUpdated = true;
             }
             if (data.disableRules.length > 0) {
                 for (var i = 0; i < data.disableRules.length; i++) {
-                    console.log("Disable id: " + data.disableRules[i]);
                     RE.turn("OFF", {
                         "name": data.disableRules[i]
                     });
