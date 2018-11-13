@@ -1,5 +1,5 @@
 "use strict";
-const utility = require('./rules/utility.js')
+const utility = require('./utility.js')
 const Constants = require("./constants.js").Constants;
 
 class Character {

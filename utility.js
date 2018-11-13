@@ -14,4 +14,12 @@ function rollDice(numberOfDice, modifier) {
     }
 }
 
-module.exports = {rollDice}
+function rollNSidedDice(n, numberOfDice) {
+    if (!numberOfDice || numberOfDice == 1) {
+        return getRandomInt(n); 
+    } else {
+        return rollNSidedDice(n, numberOfDice - 1)
+    }
+}
+
+module.exports = {rollDice, rollNSidedDice}

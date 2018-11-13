@@ -10,7 +10,7 @@
  * in the dungeon.
  *****************/
 
-const utility = require("./utility.js");
+const utility = require("../utility.js");
 const Constants = require("../constants.js").Constants;
 const fighterClassRules = require("./classes/fighterRules.js");
 
@@ -137,7 +137,7 @@ var rules = [{
         R.when(this.action == Constants.Actions.Forage)
     },
     "consequence": function(R) {
-        this.output += timeFormat(this.time) + ": You run to the fields next to your house. It is a " + ((this.time < 12) ? "chilly morning." : ((this.time < 17) ? "lovely afternoon." : "dark night."));
+        this.output += timeFormat(this.time) + ": You run to the fields next to your house. It is a " + ((this.time < 12) ? "chilly morning. " : ((this.time < 17) ? "lovely afternoon. " : "dark night. "));
         this.action = Constants.Actions.NotSet;
         this.time += Constants.Duration.Forage;
         var provisions = utility.rollDice(Constants.Provisions.ForagingDiceCount, Constants.Provisions.ForagingModifier);

@@ -11,7 +11,7 @@
  *****************/
 
 const readline = require('readline-sync');
-const utility = require("./utility.js");
+const utility = require("../utility.js");
 
 var rules = [{
     "name": "Output",

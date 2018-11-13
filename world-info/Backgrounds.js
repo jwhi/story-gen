@@ -3,13 +3,14 @@
   * Current background system and text is from 'Dungeons & Dragons: 5th Edition'
   * Copyright Wizards of the Coast
   *****************/
+ const utility = require("../utility.js");
 
 var Hermit = {
     reason: [{
-                text: "I was searehing for spiritual enlightenment.",
+                text: "I was searching for spiritual enlightenment.",
                 goal: "religion"
             },{
-                text: "I was partaking of communal living in accordanee with the dictates of a religious order.",
+                text: "I was partaking of communal living in accordance with the dictates of a religious order.",
                 goal: "religion"
             },{
                 text: "I was exiled for a crime I didn't commit.",
@@ -35,7 +36,7 @@ var Hermit = {
                 text: "I've been isolated for so long that I rarely speak, preferring gestures and the occasional grunt.",
                 trait: "mute"
             },{
-                text: "I am utterly serence, even in the face of disaster.",
+                text: "I am utterly serene, even in the face of disaster.",
                 trait: "peaceful"
             },{
                 text: "The leader of my community had something wise to say on every topic, and I am eager to share that wisdom.",
@@ -63,8 +64,25 @@ var Outlander = {
 }
 
 var Soldier = {
-    // Support includes cook, blacksmith, etc.
-    specialty: ["Officer", "Scout", "Infantry", "Cavalry", "Healer", "Quartermaster", "Standard bearer", "Support"],
+    specialty:
+        [{
+            title: "Officer"
+        },{
+            title: "Scout"
+        },{
+            title: "Infantry"
+        },{
+            title: "Cavalry"
+        },{
+            title: "Healer"
+        },{
+            title: "Quartermaster"
+        },{
+            title: "Standard bearer"
+        }, {
+            // Support includes cook, blacksmith, etc.
+            title: "Support"
+        }],
     personality:
         [{
             text: "I'm always polite and respectful.",
@@ -91,21 +109,67 @@ var Soldier = {
     ideals:
         [{
             text: "Our lot is to lay down our lives in defense of others.",
-            alignment: "Good"
+            alignment: "good"
         },{
             text: "I do what I must and obey just authority.",
-            alignment: "Lawful"
+            alignment: "lawful"
         },{
             text: "When people follow orders blindly, they embrace a kind of tyranny.",
-            alignment: "Chaotic"
+            alignment: "chaotic"
         },{
             text: "In life as in war, the stronger force wins.",
-            alignment: "Evil"
+            alignment: "evil"
         }, {
             text: "Ideals aren't worth killing over or going to war for.",
-            alignment: "Neutral"
+            alignment: "neutral"
         },{
             text: "My city, nation, or people are all that matter.",
-            alignment: "Any"
+            alignment: "any"
+        }],
+    bond:
+        [{
+            text: "I would still lay down my life for the people I served with.",
+            trait: "loyal"
+        },{
+            text: "Someone saved my life on the battlefield. To this day, I will never leave a friend behind.",
+            trait: "loyal"
+        },{
+            text: "My honor is my life.",
+            trait: "honorable"
+        },{
+            text: "I'll never forget the crushing defeat my company suffered or the enemies who dealt it.",
+            trait: "regret"
+        },{
+            text: "Those who fight beside me are those worth dying for.",
+            trait: "loyal"
+        },{
+            text: "I fight for those who cannot fight for themselves.",
+            trait: "protector"
         }]
 }
+
+function getBackgroundInfo() {
+    // For soldier
+    var storyObject = {}
+    storyObject.characteristics = [];
+
+    var specialty = Soldier.specialty[utility.rollNSidedDice(Soldier.specialty.length-1)];
+    storyObject.specialty = specialty;
+    
+
+    var personality = Soldier.personality[utility.rollNSidedDice(Soldier.personality.length-1)];
+    storyObject.personality = personality;
+    storyObject.characteristics.push(personality.trait)
+
+    var ideals = Soldier.ideals[utility.rollNSidedDice(Soldier.ideals.length-1)];
+    storyObject.ideals = ideals;
+    storyObject.characteristics.push(ideals.alignment)
+
+    var bond = Soldier.bond[utility.rollNSidedDice(Soldier.bond.length-1)];
+    storyObject.bond = bond;
+    storyObject.characteristics.push(bond.trait);
+
+    return storyObject;
+}
+
+module.exports = {getBackgroundInfo};
