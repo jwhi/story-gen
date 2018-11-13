@@ -1,34 +1,38 @@
 {
     "Provisions": {
-        "ForagingDiceCount": 1,
-        "ForagingModifier": 5,
-        "EatenPerMeal": 3,
-        "EatenPerSnack": 2,
-        "StartSearch": 2    
+        "Initial": 25,
+        "NeededForSpring": 25,
+        "NeededForSummer": 15,
+        "NeededForFall": 25,
+        "NeededForWinter": 35  
     },
-    "Stamina": {
-        "LossPerHour": 0.9,
-        "GainedFromFood": 2,
-        "GainedPerHourOfSleep": 1
+    "Character": {
+        "InitialStrength": 0,
+        "InitialDexterity": 0,
+        "InitialConstitution": 0,
+        "InitialIntelligence": 0,
+        "InitialCharisma": 0,
+        "InitialLuck": 0,
+        "Good": 0,
+        "Neutral": 1,
+        "Evil": 2
     },
-    "Duration": {
-        "Forage": 2
+    "World": {
+        "InitialYear": 0,
+        "InitialDay": 0,
+        "TheDaySpringStarts": 0,
+        "TheDaySummerStarts": 92,
+        "TheDayAutumnStarts": 153,
+        "TheDayWinterStarts": 245,
+        "LengthOfYear": 365,
+        "_comment": "The 'year' begins on March 1st. This will simplify checks for the season." 
     },
-    "Hunger": {
-        "Initial": 4,
-        "PerHourMorning": 0.3,
-        "PerHourEvening": 0.5,
-        "PerHourSleeping": 0.2,
-        "Starving": 2,
-        "GainedFromProvision": 2
+    "WorldStatus": {
+        "Peace": 0,
+        "War": 1,
+        "Drought": 2
     },
-    "Actions": {
-        "NotSet": 0,
-        "FindFood": 1,
-        "Forage": 2,
-        "Sleep": 3
-    },
-    "Magic": {
-        "Heal": 0
+    "Goals": {
+        "BecomeAFighter": 0
     }
 }

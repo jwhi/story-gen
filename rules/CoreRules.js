@@ -15,7 +15,7 @@ const utility = require("../utility.js");
 
 var rules = [{
     "name": "Output",
-	"priority": 10,
+	"priority": 0,
 	"on" : true,
     "condition": function (R) {
         R.when(this.output);
@@ -26,8 +26,18 @@ var rules = [{
         R.restart();
     }
 },{
+    "name": "EndStory",
+	"priority": 0,
+	"on" : true,
+    "condition": function (R) {
+        R.when(this.end);
+    },
+    "consequence": function (R) {
+        R.stop();
+    }   
+},{
     "name": "UpdateRules",
-    "priority": 15,
+    "priority": 0,
     "on": true,
     "condition": function (R) {
         R.when(this.addRuleFile.length > 0 || this.disableRules.length > 0);

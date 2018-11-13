@@ -17,10 +17,11 @@
  * customizable for any project.
  *****************/
 
-const RuleEngine = require("node-rules");
-const generalRules = require("./rules/GeneralRules.js");
-const coreRules = require("./rules/CoreRules.js");
-const c = require("./Character.js");
+const RuleEngine = require('node-rules');
+const generalRules = require('./rules/GeneralRules.js');
+const coreRules = require('./rules/CoreRules.js');
+const c = require('./Character.js');
+const w = require('./World.js')
 
 /* Creating Rule Engine instance */
 var R = new RuleEngine();
@@ -29,28 +30,27 @@ var R = new RuleEngine();
 R.register(coreRules.rules);
 R.register(generalRules.rules);
 
-var protagonist = new c.Character("Urist", 10, 10, 10, 10, 10, 10)
+var protagonist = new c.Character("Urist", "Fletcher");
+var world = new w.World();
 
 /* Add a Fact with the protagonist's information */
 var initialFact = {
     "protagonist": protagonist,
+    "world": world,
     "end": false,
     "currentRuleFiles": [],
     "disableRules": [],
     "addRuleFile": [],
-    "day": 0,
-    "time": 0,
-    "output": '',
-    "action": 3, // Sleep
-    "runTwice": 0
+    "output": ''
 };
 
 /* Create a story! */
 function StoryEngine(RE, fact) {
     RE.execute(fact, function (data) {
-        //console.log(data.matchPath)
+        console.log(data.matchPath)
         if (data.end) {
             // If this is the end of the story, exit the function
+            console.log(data)
             console.log("The End.");
             return;
         } else {
@@ -84,14 +84,12 @@ function StoryEngine(RE, fact) {
             if (rulesUpdated) {
                 var newFact = {
                     "protagonist": data.protagonist,
+                    "world": data.world,
                     "end": false,
                     "currentRuleFiles": data.currentRuleFiles,
                     "disableRules": [],
                     "addRuleFile": [],
-                    "day": data.day,
-                    "time": data.time,
-                    "output": data.output,
-                    "action": data.action,
+                    "output": data.output
                 };
 
                 StoryEngine(RE, newFact);
