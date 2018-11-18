@@ -1,7 +1,7 @@
 "use strict";
 
 /******************
- * Production-Rule System Story Generator and Quest System
+ * Production-Rule System Story Generator
  * by Jeremy White
  * 
  * Project is being done for a senior project course for Kansas State University.
@@ -17,6 +17,11 @@
  * customizable for any project.
  *****************/
 
+/******************
+ * Starting story in Wellington as someone who wants to be a fighter.
+ *
+ *****************/
+
 const RuleEngine = require('node-rules');
 const generalRules = require('./rules/GeneralRules.js');
 const coreRules = require('./rules/CoreRules.js');
@@ -30,7 +35,7 @@ var R = new RuleEngine();
 R.register(coreRules.rules);
 R.register(generalRules.rules);
 
-var protagonist = new c.Character("Urist", "Fletcher");
+var protagonist = new c.Character("Jeremy", "White");
 var world = new w.World();
 
 /* Add a Fact with the protagonist's information */

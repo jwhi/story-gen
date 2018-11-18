@@ -8,15 +8,15 @@
     "_comment": "Large village that can support a market"
 },{
     "TownTypeID": 30,
-    "TownTypeDescription": "Monastary",
-    "_comment": "Monastary with a small group of monks. Isolated in an area where they tend the land and have traveling traders."
+    "TownTypeDescription": "Monastery",
+    "_comment": "Monastery with a small group of monks. Isolated in an area where they tend the land and have traveling traders."
 },{
     "TownTypeID": 31,
     "TownTypeDescription": "Monastic Village",
-    "_comment": "Small monastary with a town attatched"
+    "_comment": "Small monastery with a town attached"
 },{
     "TownTypeID": 35,
-    "TownTypeDescription": "Monastary with river"
+    "TownTypeDescription": "Monastery with river"
 },{
     "TownTypeID": 40,
     "TownTypeDescription": "City",
@@ -36,5 +36,5 @@
 },{
     "TownTypeID": 60,
     "TownTypeDescription": "Barbarian Camp",
-    "_comment": "Similar to a stronghold but filled with maruaders."
+    "_comment": "Similar to a stronghold but filled with marauders."
 }]

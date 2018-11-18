@@ -4,7 +4,9 @@
         "NeededForSpring": 25,
         "NeededForSummer": 15,
         "NeededForFall": 25,
-        "NeededForWinter": 35  
+        "NeededForWinter": 35,
+        "LowFoodRatio": 0.1,
+        "_comment": "A character will need to search for food if their currentFood/neededFoodForNextSeason < LowFoodRatio"  
     },
     "Character": {
         "InitialStrength": 0,
@@ -12,10 +14,7 @@
         "InitialConstitution": 0,
         "InitialIntelligence": 0,
         "InitialCharisma": 0,
-        "InitialLuck": 0,
-        "Good": 0,
-        "Neutral": 1,
-        "Evil": 2
+        "InitialLuck": 0
     },
     "World": {
         "InitialYear": 0,
@@ -34,5 +33,25 @@
     },
     "Goals": {
         "BecomeAFighter": 0
+    },
+    "Alignment": {
+        "Good": 0,
+        "Neutral": 1,
+        "Evil": 2
+    },
+    "TownType": {
+        "Village": 10,
+        "Town": 20,
+        "Monastery": 30,
+        "Monastic Village": 31,
+        "City": 40,
+        "Walled City": 41,
+        "Cathedral City": 42,
+        "Stronghold": 50,
+        "Barbarian Camp": 60
+    },
+    "TownReputation": {
+        "Stranger": 0,
+        "Trusted": 10
     }
 }

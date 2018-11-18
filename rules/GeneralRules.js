@@ -19,7 +19,7 @@ var rules = [{
     "priority": 1,
     "on" : true,
     "condition": function (R) {
-        R.when(this.protagonist.alignment == Constants.Character.Neutral);
+        R.when(this.protagonist.alignment == Constants.Alignment.Neutral);
     },
     "consequence": function (R) {
         this.output += "You are neutral!\n";
@@ -38,11 +38,18 @@ var rules = [{
         this.world.Day += 1;
         R.restart();
     }
+},{
+    "name": "HasFighterGoal",
+    "priority": 1,
+    "on" : true,
+    "condition": function (R) {
+        R.when(this.protagonist.goals.indexOf(Constants.Goals.BecomeAFighter) >= 0);
+    },
+    "consequence": function (R) {
+        this.output += "I want to be a fighter! and I became one\n";
+        this.protagonist.goals = this.protagonist.goals.filter(function(goal) { return goal != Constants.Goals.BecomeAFighter });
+        R.restart();
+    }
 }];
-
-function timeFormat(time) {
-    (time == 0 || time == 12 ? time += 12 : time)
-    return (time > 12 ? time-12 + ':00PM' : time + ':00AM')
-}
 
 module.exports = {rules}
