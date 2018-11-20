@@ -22,7 +22,9 @@ const utility = require('../utility.js');
 const Constants = require('../constants.js').Constants;
 const fighterClassRules = require('./classes/fighterRules.js');
 const w = require('../World.js');
-const c = require('../Character.js')
+const c = require('../Character.js');
+const jobCreator = require('../Jobs.js');
+const itemCreator = require('../Items.js');
 
 var rules = [{
     /************* Start of checks that pass time but don't provide any story *************/
@@ -83,6 +85,7 @@ var rules = [{
         R.when(!this.flags['searchForJob'] && !this.flags['hasJob'] && (this.protagonist.provisions <= this.world.getProvisionsNeeded()));
     },
     "consequence": function (R) {
+        console.log("NeedJob")
         this.flags['searchForJob'] = true;
         this.queueOutput(`${this.protagonist.firstName} needs to find work before ${this.world.getNextSeason()} comes in ${this.world.getDaysUntilNextSeason()} days.`)
         R.restart();
@@ -102,6 +105,7 @@ var rules = [{
         R.when(this.flags['provisionsNeeded']);
     },
     "consequence": function (R) {
+        console.log("provisions.")
         this.debug["findProvisionsBasic"] = (this.debug["findProvisionsBasic"] ? this.debug["findProvisionsBasic"] += 1 : this.debug["findProvisionsBasic"] = 1);
         
         if (this.debug["findProvisionsBasic"] < 3) {
@@ -123,49 +127,136 @@ var rules = [{
     "priority": Constants.Priorities.FindBasicJob,
     "on" : true,
     "condition": function (R) {
-        R.when(this.flags['searchForJob']);
+        R.when(this.flags['searchForJob'] && !this.flags['hasJob'] );
     },
     "consequence": function (R) {
-        /*
-         * Jobs available should be related to what town they are in.
-         * Towns have economies centered around different forms of
-         * agriculture and labor.
-         * 
-         * The number of jobs will also be affected by the size of the town.
-         * 
-         * This will eventually be another set of rules that generate jobs,
-         * but right now the jobs use a template.
-         *
-         */
+        // Only create this job once
+        this.debug["FindBasicJob"] = (this.debug["FindBasicJob"] ? this.debug["FindBasicJob"] += 1 : this.debug["FindBasicJob"] = 1);
+        console.log("Find job");
+        if (this.debug["FindBasicJob"] == 1) {
+            console.log("creatingJob");
+            /*
+            * Jobs available should be related to what town they are in.
+            * Towns have economies centered around different forms of
+            * agriculture and labor.
+            * 
+            * The number of jobs will also be affected by the size of the town.
+            * 
+            * This will eventually be another set of rules that generate jobs,
+            * but right now the jobs use a template.
+            *
+            */
 
-        // Create/find a character to give the protagonist a job
-        // Right now I always create a new person, but would be
-        // nice to see reoccurring characters in longer stories
-        var characterOptions = {
-            //firstName:
-            //lastName:
-            //relationship:
-            opinion: Constants.CharacterOpinions.Neighbor,
-            location: this.protagonist.getCurrentTown()
+            // Create/find a character to give the protagonist a job
+            // Right now I always create a new person, but would be
+            // nice to see reoccurring characters in longer stories
+            var characterOptions = {
+                //firstName:
+                //lastName:
+                //relationship:
+                opinion: Constants.CharacterOpinions.Neighbor,
+                location: this.protagonist.getCurrentTown()
+            }
+            var jobGiver = new c.SupportingCharacter(characterOptions);
+
+            // Story segment about how the protagonist heard about this job
+            this.queueOutput(`${this.protagonist.firstName} hear a rumor that ${jobGiver.firstName} was looking for help.`);
+
+            // Story segment about getting to meet with the job giver.
+            // Can use the job giver's opinion about the protagonist and their relationship to create different story segments.
+            switch(jobGiver.opinion) {
+                case Constants.CharacterOpinions.Neighbor:
+                    this.queueOutput(`${jobGiver.firstName} has lived in ${jobGiver.location} their whole life.`);
+                    if (jobGiver.interactions == 0) {
+                        this.queueOutput(`This is the first time ${this.protagonist.firstName} has actually talked to them though.`)
+                    }
+                    break;
+            }
+
+            this.queueOutput(`After meeting with ${jobGiver.firstName} at their home, ${this.protagonist.firstName} is tasked with finding a flower.`)
+
+            // Create the job object that gets stored in the fact and will be checked against
+            // to determine when the protagonist finishes the job.
+            var jobReward = new jobCreator.Reward(Constants.RewardTypes.SkillIncrease, {skill: "fighter", modifier: 5});
+            var jobOptions = {
+                giver: jobGiver,
+                protagonistField: Constants.ProtagonistField.Item,
+                successFunction: function (itemList) { for(var i = 0; i < itemList.length; i++) { if (itemList[i].name == "flower") { return true; } } return false; },
+                reward: jobReward,
+                rewardText: `${jobGiver.firstName} explains this flower reminds them of the time time they spent as a soldier, but do not go into further detail. ${jobGiver.firstName} wants to pass on some of their sword fighting tips to ${this.protagonist.firstName}.`
+            }
+            var newJob = new jobCreator.Job(jobOptions);
+            this.currentJob = newJob;
+            
+            // Give the protagonist a goal that will cause them to complete the job
+            this.protagonist.addGoal(Constants.Goals.FindFlower);
+
+            // Flags do not get changed until the end.
+            // Once job information is loaded from a file or database, want
+            // to make sure the job is able to be created successfully so
+            // the protagonist does not start their quest to complete a
+            // corrupted job.
+            this.flags['searchForJob'] = false;
+            this.flags['hasJob'] = true;
+            R.restart();
         }
-        var jobGiver = new c.SupportingCharacter(characterOptions);
+    }
+},{
+    /************* Start of rules that help the protagonist to accomplish goals *************/
+    "name": "FindFlowerGoal",
+    "priority": 1,
+    "on" : true,
+    "condition": function (R) {
+        R.when(this.protagonist.hasGoal(Constants.Goals.FindFlower));
+    },
+    "consequence": function (R) {
+        console.log("FindFlowerGoal");
 
-        // Story segment about how the protagonist heard about this job
-        this.queueOutput(`${this.protagonist.firstName} hear a rumor that ${jobGiver.firstName} was looking for help.`);
+        this.queueOutput(`There is a small field near the forest of ${this.protagonist.getCurrentTown()} that probably has the flower ${this.currentJob.giver.firstName} is looking for.`);
+        
+        var itemOptions = {
+            name: "flower"
+        }
+        var jobItem = new itemCreator.Item(itemOptions);
+        this.protagonist.addItemToInventory(jobItem);
+        this.queueOutput("You find a flower");
+        this.protagonist.removeGoal(Constants.Goals.FindFlower)
+        R.restart();
+    }
+},{
+    /************* Start of rules that check if jobs have been completed *************/
 
-        // Story segment about getting to meet with the job giver.
-        // Can use the job giver's opinion about the protagonist and their relationship to create different story segments.
-        switch(jobGiver.opinion) {
-            case Constants.CharacterOpinions.Neighbor:
-                this.queueOutput(`${jobGiver.firstName} has lived in ${jobGiver.location} their whole life.`);
-                if (jobGiver.interactions == 0) {
-                    this.queueOutput(`This is the first time ${this.protagonist.firstName} has actually talked to them though.`)
-                }
-                break;
+    // Need to check that the current job object has all the fields required to check for
+    // success, but for testing purposes I am just testing if there is a current job and
+    // assume that the required variables and functions for the job object are set.
+    "name": "JobSuccess",
+    "priority": 1,
+    "on" : true,
+    "condition": function (R) {
+        R.when(this.currentJob && (this.currentJob.successFunction(this.protagonist.getValueFromField(this.currentJob.protagonistField))));
+    },
+    "consequence": function (R) {
+        console.log("JobSuccess");
+        this.queueOutput("You found the flower!");
+        this.protagonist.removeGoal(Constants.Goals.FindFlower);
+        
+        if (this.currentJob.reward) {
+            var jobReward = currentJob.reward;
+            if (jobReward.rewardType == Constants.RewardTypes.SkillIncrease) {
+               this.protagonist.modifySkillFromName(jobReward.rewardObject.skill, jobReward.rewardObject.modifier);
+            }
+        }
+        
+        if (this.currentJob.rewardText) {
+            this.queueOutput(this.currentJob.rewardText);
         }
 
-        this.flags['searchForJob'] = false;
-        this.flags['hasJob'] = true;
+        // Delete this job from the fact after the fact and story
+        // finish updating.
+        delete this.currentJob;
+
+        this.flags['hasJob'] = false;
+
         R.restart();
     }
 }];
