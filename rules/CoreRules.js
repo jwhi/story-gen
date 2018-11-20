@@ -18,11 +18,28 @@ var rules = [{
 	"priority": 0,
 	"on" : true,
     "condition": function (R) {
-        R.when(this.output);
+        R.when(this.output.length > 0);
     },
     "consequence": function (R) {
-        console.log(this.output)
-        this.output = '';
+        // Right now all the lines in the story are stored in the rule files.
+        // Plan for future will be to take all the text and place it in a JSON
+        // file to allow easy editing. This will require a change to how we
+        // add variables from the fact into the story. We have to create a
+        // custom string template system so when the story from a separate file
+        // contains the string #protagonistFirstName, the output knows to replace
+        // that with the value stored in the fact.
+        for (var i = 0; i < this.output.length; i++) {
+            console.log(this.output[i]);
+        }
+        this.output = [];
+
+        // Debug output just to see how different rules are behaving behind
+        // the scenes. passedDayCount is used to count the number of days
+        // that passed where no rules trigged story text to be written.
+        if (this.debug["passedDayCount"]) {
+            console.log(`DEBUG: Passed ${this.debug["passedDayCount"]} days since last output.`)
+            delete this.debug["passedDayCount"];
+        }
         R.restart();
     }
 },{

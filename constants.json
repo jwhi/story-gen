@@ -1,10 +1,13 @@
 {
     "Provisions": {
         "Initial": 25,
-        "NeededForSpring": 25,
+        "NeededForSpring": 15,
         "NeededForSummer": 15,
-        "NeededForFall": 25,
+        "NeededForAutumn": 25,
         "NeededForWinter": 35,
+        "NeededDefault": 25,
+        "UsedPerDay": 1,
+        "CanBeFoundInBasicSearch": 3,
         "LowFoodRatio": 0.1,
         "_comment": "A character will need to search for food if their currentFood/neededFoodForNextSeason < LowFoodRatio"  
     },
@@ -53,5 +56,37 @@
     "TownReputation": {
         "Stranger": 0,
         "Trusted": 10
+    },
+    "Priorities": {
+        "PassDay": 1,
+        "FindBasicJob": 7,
+        "NeedJob": 8,
+        "FindProvisionsBasic": 10,
+        "NeedProvisionsImmediately": 11,
+        "EndStory": 12
+    },
+    "CharacterOpinions": {
+        "_comment": "The type of relationship a supporting character has with the protagonist.",
+        "Stranger": 0,
+        "SeenAroundTown": 1,
+        "Neighbor": 2,
+        "AppreciateAsAPerson": 3,
+        "Friend": 4,
+        "BestFriend": 5,
+        "FamilyFriend": 4,
+        "Enemy": -1,
+        "EnemyOfFamily": -2
+    },
+    "JobStart":{
+        "_comment": "Let's the story generator know how the protagonist found and accepted this job",
+        "Request": 0
+    },
+    "Areas": {
+        "Home": 0,
+        "Forest": 1,
+        "AroundTown": 2
+    },
+    "ItemTypes": {
+        "Food": 0
     }
 }

@@ -22,4 +22,4 @@ function rollNSidedDice(n, numberOfDice) {
     }
 }
 
-module.exports = {rollDice, rollNSidedDice}
+module.exports = {rollDice, rollNSidedDice, getRandomInt}

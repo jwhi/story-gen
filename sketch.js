@@ -15,6 +15,13 @@
  * every story segment. Text and systems are being used as a placeholder until I finalize systems that will be
  * used along with my other project Labyrinthine Flight and how to make a module that will be easily
  * customizable for any project.
+ * 
+ * All text for the story is currently only stored in the rules so modifying individual story segments is not
+ * the most convenient. All the story segments will eventually moved to their own file and comments will be
+ * included so the writer has all the information about how that story segment gets triggered.
+ * This won't be the easiest change to make since text sometimes relies on variables stored in the fact of the
+ * rule engine, but just using JS template strings won't work directly.
+ * 
  *****************/
 
 /******************
@@ -25,6 +32,7 @@
 const RuleEngine = require('node-rules');
 const generalRules = require('./rules/GeneralRules.js');
 const coreRules = require('./rules/CoreRules.js');
+const Constants = require('./constants.js').Constants;
 const c = require('./Character.js');
 const w = require('./World.js')
 
@@ -42,21 +50,58 @@ var world = new w.World();
 var initialFact = {
     "protagonist": protagonist,
     "world": world,
+    "flags": {},
     "end": false,
     "currentRuleFiles": [],
     "disableRules": [],
     "addRuleFile": [],
-    "output": ''
+    "output": [],
+    "debug": {},
+    
+    // All story rules that include actions or story events need to progress time.
+    // This function handles the updates that happen every day no matter what.
+    passDay(daysToPass) {
+        if (daysToPass) {
+            this.world.passDay(daysToPass);
+            this.protagonist.provisions -= (Constants.Provisions.UsedPerDay * daysToPass);
+        } else {
+            this.world.passDay();
+            this.protagonist.provisions -= Constants.Provisions.UsedPerDay;
+        }
+    },
+
+    /*
+     * Adds a function to handle adding text to the output. This will
+     * save the pain of calling this.output.push('text') every time 
+     * a fact queues output to be written by the output rule.
+     * This function will also allow us to do any input sanitation if needed,
+     * update the output to another object if needed in the future without
+     * needing to rewrite a majority of the rules.
+     */
+    queueOutput(storyText) {
+        if (storyText.length > 0) {
+            this.output.push(storyText);
+        }
+    }
 };
 
 /* Create a story! */
 function StoryEngine(RE, fact) {
     RE.execute(fact, function (data) {
-        console.log(data.matchPath)
+        //console.log("PROTAGONIST DATA");
+        //console.log(data.protagonist);
+        //console.log("WORLD DATA");
+        //console.log(data.world);
+        //console.log("FLAGS");
+        //console.log(data.flags);
+        //console.log("DEBUG DATA");
+        //console.log(data.debug);
+        //console.log("MATCH PATH");
+        //console.log(data.matchPath);
         if (data.end) {
             // If this is the end of the story, exit the function
-            console.log(data)
-            console.log("The End.");
+            //console.log(data)
+            //console.log("The End.");
             return;
         } else {
             var rulesUpdated = false;
@@ -75,6 +120,8 @@ function StoryEngine(RE, fact) {
                 data.currentRuleFiles.concat(newRules);
                 rulesUpdated = true;
             }
+            // Need to add system for keeping track when rules get disabled so when
+            // new rule files are added, rules that were disabled earlier stay disabled.
             if (data.disableRules.length > 0) {
                 for (var i = 0; i < data.disableRules.length; i++) {
                     RE.turn("OFF", {
@@ -94,7 +141,22 @@ function StoryEngine(RE, fact) {
                     "currentRuleFiles": data.currentRuleFiles,
                     "disableRules": [],
                     "addRuleFile": [],
-                    "output": data.output
+                    "output": data.output,
+                    "debug": data.debug,
+                    passDay(daysToPass) {
+                        if (daysToPass) {
+                            this.world.passDay(daysToPass);
+                            this.protagonist.provisions -= (Constants.Provisions.UsedPerDay * daysToPass);
+                        } else {
+                            this.world.passDay();
+                            this.protagonist.provisions -= Constants.Provisions.UsedPerDay;
+                        }
+                    },
+                    queueOutput(storyText) {
+                        if (storyText.length > 0) {
+                            this.output.push(storyText);
+                        }
+                    }
                 };
 
                 StoryEngine(RE, newFact);
