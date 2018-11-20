@@ -18,7 +18,7 @@ var rules = [{
         R.when(this.protagonist.alignment == Constants.Alignment.Neutral);
     },
     "consequence": function (R) {
-        this.output.push("You are neutral!");
+        this.queueOutput("You are neutral!");
         this.disableRules.push("Test");
         R.restart();
     }
@@ -30,7 +30,7 @@ var rules = [{
         R.when(this.world.Day == 0);
     },
     "consequence": function (R) {
-        this.output.push("Happy Spring!");
+        this.queueOutput("Happy Spring!");
         this.world.Day += 1;
         R.restart();
     }
@@ -42,7 +42,7 @@ var rules = [{
         R.when(this.protagonist.goals.indexOf(Constants.Goals.BecomeAFighter) >= 0);
     },
     "consequence": function (R) {
-        this.output.push("I want to be a fighter! and I became one.");
+        this.queueOutput("I want to be a fighter! and I became one.");
         this.protagonist.goals = this.protagonist.goals.filter(function(goal) { return goal != Constants.Goals.BecomeAFighter });
         R.restart();
     }

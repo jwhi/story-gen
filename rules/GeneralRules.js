@@ -52,7 +52,7 @@ var rules = [{
         R.when(this.world.Day > 30);
     },
     "consequence": function (R) {
-        this.output.push("Thirty days have passed.");
+        this.queueOutput("Thirty days have passed.");
         this.end = true;
         R.restart();
     }
@@ -84,7 +84,7 @@ var rules = [{
     },
     "consequence": function (R) {
         this.flags['searchForJob'] = true;
-        this.output.push(`${this.protagonist.firstName} needs to find work before ${this.world.getNextSeason()} comes in ${this.world.getDaysUntilNextSeason()} days.`)
+        this.queueOutput(`${this.protagonist.firstName} needs to find work before ${this.world.getNextSeason()} comes in ${this.world.getDaysUntilNextSeason()} days.`)
         R.restart();
     }
 },{
@@ -105,10 +105,10 @@ var rules = [{
         this.debug["findProvisionsBasic"] = (this.debug["findProvisionsBasic"] ? this.debug["findProvisionsBasic"] += 1 : this.debug["findProvisionsBasic"] = 1);
         
         if (this.debug["findProvisionsBasic"] < 3) {
-            this.output.push(`Searching for food in the woods near ${this.protagonist.getCurrentTown()}.`);
-            this.output.push(`${this.protagonist.firstName} grabbed some of their favorite berries.`)
+            this.queueOutput(`Searching for food in the woods near ${this.protagonist.getCurrentTown()}.`);
+            this.queueOutput(`${this.protagonist.firstName} grabbed some of their favorite berries.`)
         } else {
-            this.output.push(`${this.protagonist.firstName} had to settle for some bland but edible plants.`);
+            this.queueOutput(`${this.protagonist.firstName} had to settle for some bland but edible plants.`);
         }
         this.protagonist.provisions += Constants.Provisions.CanBeFoundInBasicSearch;
         // Can set the flag to false instead of deleting because this flag will most likely occur a lot
