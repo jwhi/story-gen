@@ -172,5 +172,5 @@ function StoryEngine(RE, fact) {
         }
     });
 }
-//console.log(R);
+console.log(`Total rules: ${R.rules.length}\tActive rules: ${R.activeRules.length}`);
 StoryEngine(R, initialFact);

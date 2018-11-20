@@ -62,7 +62,10 @@
         "FindProvisionsBasic": 13,
         "CompleteJob": 14,
         "NeedProvisionsImmediately": 15,
-        "EndStory": 16
+        "EndStory": 16,
+        "ExitStory": 18,
+        "UpdateRules": 19,
+        "Output": 20
     },
     "CharacterOpinions": {
         "_comment": "The type of relationship a supporting character has with the protagonist.",

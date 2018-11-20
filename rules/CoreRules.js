@@ -12,10 +12,11 @@
 
 const readline = require('readline-sync');
 const utility = require("../utility.js");
+const Constants = require('../constants.js').Constants;
 
 var rules = [{
     "name": "Output",
-	"priority": 0,
+	"priority": Constants.Priorities.Output,
 	"on" : true,
     "condition": function (R) {
         R.when(this.output.length > 0);
@@ -44,7 +45,7 @@ var rules = [{
     }
 },{
     "name": "ExitStory",
-	"priority": 0,
+	"priority": Constants.Priorities.ExitStory,
 	"on" : true,
     "condition": function (R) {
         R.when(this.end);
@@ -54,7 +55,7 @@ var rules = [{
     }   
 },{
     "name": "UpdateRules",
-    "priority": 0,
+    "priority": Constants.Priorities.UpdateRules,
     "on": true,
     "condition": function (R) {
         R.when(this.addRuleFile.length > 0 || this.disableRules.length > 0);

@@ -20,8 +20,6 @@
 
 const utility = require('../utility.js');
 const Constants = require('../constants.js').Constants;
-const fighterClassRules = require('./classes/fighterRules.js');
-const w = require('../World.js');
 const c = require('../Character.js');
 const jobCreator = require('../Jobs.js');
 const itemCreator = require('../Items.js');
@@ -99,7 +97,7 @@ var rules = [{
     // This allows us to modify the story text based on how often it has been called.
     "name": "FindProvisionsBasic",
     "priority": Constants.Priorities.FindProvisionsBasic,
-    "on" : false,
+    "on" : true,
     "condition": function (R) {
         R.when(this.flags['provisionsNeeded']);
     },
