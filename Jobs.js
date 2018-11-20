@@ -37,7 +37,7 @@ class Job {
         // Used in rule when conditional statement to determine what
         // information from the protagonist within the fact which will
         // then be passed immediately to the jobs success function.
-        if (options.protagonistField) {
+        if (options.protagonistField != null) {
             this.protagonistField = options.protagonistField;
         } else {
             // This protagonist check is directly related to the

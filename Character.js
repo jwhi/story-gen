@@ -78,7 +78,7 @@ class Character {
     }
 
     removeGoal(goalToRemove) {
-        this.protagonist.goals.filter(function(goal) { return goal != goalToRemove });
+        this.goals = this.goals.filter(function(goal) { return goal != goalToRemove });
     }
 }
 

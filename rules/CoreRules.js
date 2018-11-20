@@ -37,7 +37,7 @@ var rules = [{
         // the scenes. passedDayCount is used to count the number of days
         // that passed where no rules trigged story text to be written.
         if (this.debug["passedDayCount"]) {
-            console.log(`DEBUG: Passed ${this.debug["passedDayCount"]} days since last output.`)
+            //console.log(`DEBUG: Passed ${this.debug["passedDayCount"]} days since last output.`)
             delete this.debug["passedDayCount"];
         }
         R.restart();

@@ -141,6 +141,7 @@ function StoryEngine(RE, fact) {
                 var newFact = {
                     "protagonist": data.protagonist,
                     "world": data.world,
+                    "flags": data.flags,
                     "end": false,
                     "currentRuleFiles": data.currentRuleFiles,
                     "disableRules": [],
@@ -162,6 +163,9 @@ function StoryEngine(RE, fact) {
                         }
                     }
                 };
+                if (data.currentJob) {
+                    newFact.currentJob = data.currentJob;
+                }
 
                 StoryEngine(RE, newFact);
             }
