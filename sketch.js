@@ -172,5 +172,5 @@ function StoryEngine(RE, fact) {
         }
     });
 }
-
+//console.log(R);
 StoryEngine(R, initialFact);

@@ -43,7 +43,7 @@ var rules = [{
         R.restart();
     }
 },{
-    "name": "EndStory",
+    "name": "ExitStory",
 	"priority": 0,
 	"on" : true,
     "condition": function (R) {

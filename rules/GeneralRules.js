@@ -99,7 +99,7 @@ var rules = [{
     // This allows us to modify the story text based on how often it has been called.
     "name": "FindProvisionsBasic",
     "priority": Constants.Priorities.FindProvisionsBasic,
-    "on" : true,
+    "on" : false,
     "condition": function (R) {
         R.when(this.flags['provisionsNeeded']);
     },
@@ -208,28 +208,37 @@ var rules = [{
         }
         var jobItem = new itemCreator.Item(itemOptions);
         this.protagonist.addItemToInventory(jobItem);
-        this.queueOutput("You find a flower");
+        if (this.currentJob) {
+            this.queueOutput(`There is a large patch of flowers that look exactly as ${this.currentJob.giver.firstName} described.`);
+        } else {
+            this.queueOutput(`There is a large patch of beautiful flowers that ${this.protagonist.firstName} can't help but pick.`);
+        }
         this.protagonist.removeGoal(Constants.Goals.FindFlower);
         R.restart();
     }
 },{
     /************* Start of rules that check if jobs have been completed *************/
-
     // Need to check that the current job object has all the fields required to check for
     // success, but for testing purposes I am just testing if there is a current job and
     // assume that the required variables and functions for the job object are set.
+    // Check should include: 
+    //this.currentJob.successFunction(this.protagonist.getValueFromField(this.currentJob.protagonistField))
+    // Rule currently does not work.
     "name": "JobSuccess",
     "priority": Constants.Priorities.CompleteJob,
-    "on" : false,
+    "on" : true,
     "condition": function (R) {
-        R.when(this.currentJob && (this.currentJob.successFunction(this.protagonist.getValueFromField(this.currentJob.protagonistField))));
+        R.when(this.currentJob && this.currentJob.successFunction(this.protagonist.getValueFromField(this.currentJob.protagonistField)));
     },
     "consequence": function (R) {
-        this.queueOutput("You found the flower!");
-        this.protagonist.removeGoal(Constants.Goals.FindFlower);
+        if (this.currentJob.protagonistField == Constants.ProtagonistField.Item) {
+            this.queueOutput(`${this.protagonist.firstName} brings the item back to ${this.currentJob.giver.firstName}'s home.`);
+        }
+        
+        //this.protagonist.removeGoal(Constants.Goals.FindFlower);
         
         if (this.currentJob.reward) {
-            var jobReward = currentJob.reward;
+            var jobReward = this.currentJob.reward;
             if (jobReward.rewardType == Constants.RewardTypes.SkillIncrease) {
                this.protagonist.modifySkillFromName(jobReward.rewardObject.skill, jobReward.rewardObject.modifier);
             }
@@ -242,9 +251,9 @@ var rules = [{
         // Delete this job from the fact after the fact and story
         // finish updating.
         delete this.currentJob;
-
+        
         this.flags['hasJob'] = false;
-
+        this.passDay();
         R.restart();
     }
 }];
