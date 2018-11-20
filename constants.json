@@ -34,9 +34,6 @@
         "War": 1,
         "Drought": 2
     },
-    "Goals": {
-        "BecomeAFighter": 0
-    },
     "Alignment": {
         "Good": 0,
         "Neutral": 1,
@@ -88,5 +85,17 @@
     },
     "ItemTypes": {
         "Food": 0
+    },
+    "ProtagonistField": {
+        "Item": 0
+    },
+    "RewardTypes": {
+        "SkillIncrease": 0,
+        "Item": 1
+    },
+    "Goals": {
+        "BecomeAFighter": 0,
+        "FindFlower": 1,
+        "_comment": "Goals can be given by jobs, set from the beginning, events in the story, etc."
     }
 }

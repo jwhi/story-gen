@@ -17,37 +17,25 @@ const utility = require('./utility.js');
 const Constants = require("./constants.js").Constants;
 
 class Item {
-    constructor(itemType, name, description, options) {
-        // Types: food
-        this.type = itemType,
-        this.name = name,
-        this.description = description;
+    constructor(options) {
+        if (options.name) {
+            this.name = options.name;
+        } else {
+            this.name = '';
+        }
 
+        if (options.description) {
+            this.description = options.description;
+        }
+    }
 
-        if (options.consumedText) {
-            this.consumedText = options.consumedText;
-        }
-        if (options.actionWhenUsed) {
-            // I will need to figure out the best way to design this, but
-            // I want to give the protagonist increased provisions or something
-            // if they consume a job reward.
-            this.actionWhenUsed = options.actionWhenUsed;
-        }
-        if (options.from) {
-            this.from = options.from;
-        }
-        if (options.shelfLife) {
-            // This will handle if an item goes bad or not. Would be a weird
-            // story to get a food item and bring it up a year later. If an
-            // item spoils and the protagonist has it on them, the story will
-            // include some text that they threw it away.
-            this.shelfLife = options.shelfLife;
-        }
-        if (options.dayRecieved) {
-            // This will be the day the item was given to the player. The item
-            // shelfLife is days after this date that the item goes bad.
-            // The day will be calculated by (currentYear)*(lengthOfYear) + (currentDay);
-            this.dayRecieved = options.dayRecieved;
+    getDescription() {
+        if (this.description) {
+            return this.description;
+        } else {
+            return 'impossible to describe'
         }
     }
 }
+
+module.exports = {Item}

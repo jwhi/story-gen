@@ -77,6 +77,10 @@ var initialFact = {
      * This function will also allow us to do any input sanitation if needed,
      * update the output to another object if needed in the future without
      * needing to rewrite a majority of the rules.
+     * This would open up more opportunities to include variables in story
+     * segments. For example, right now job reward text can not use text
+     * stored in the item description when the item is turned in on the
+     * completion of a job.
      */
     queueOutput(storyText) {
         if (storyText.length > 0) {

@@ -27,6 +27,8 @@ class Character {
         this.skills = {};
         this.skills["fighter"] = 0;
 
+        this.items = [];
+
         this.alignment = Constants.Alignment.Neutral;
         
         this.initialLuck = utility.rollDice(1,6);
@@ -36,6 +38,47 @@ class Character {
     getCurrentTown() {
         // Will return undefined when no town is set
         return this.townsVisited[this.townsVisited.length-1];
+    }
+
+    getValueFromField(fieldName) {
+        if (fieldName == Constants.ProtagonistField.Item) {
+            return this.items;
+        }
+    }
+
+    modifySkillFromName(skillName, modifier) {
+        if (this.skills[skillName]) {
+            this.skills[skillName] += modifier;
+        } else {
+            this.skills[skillName] = modifier;
+        }
+    }
+
+    addItemToInventory(item) {
+        this.items.push(item);
+    }
+
+    removeItemFromInventory() {
+        // Need a reliable way to remove a specific item from the inventory
+        // Can use a unique id for all items or can create a system where
+        // items found for a goal completion will have a flag so can remove
+        // a goal items by name.
+    }
+
+    hasGoal(goalToCheck) {
+        return (this.goals.indexOf(goalToCheck) >= 0)
+    }
+
+    addGoal(goalToAdd) {
+        // Don't add the goal if the character already has it
+        if (!this.hasGoal(goalToAdd)) {
+            this.goals.push(goalToAdd);
+        }
+        
+    }
+
+    removeGoal(goalToRemove) {
+        this.protagonist.goals.filter(function(goal) { return goal != goalToRemove });
     }
 }
 
