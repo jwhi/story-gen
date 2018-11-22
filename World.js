@@ -1,6 +1,6 @@
 "use strict";
 const utility = require('./utility.js');
-const Constants = require('./constants.js').Constants;
+const Constants = require('./loadJSON.js').Constants;
 
 class World {
     constructor() {

@@ -17,7 +17,7 @@
  * 
  *****************/
 const utility = require('./utility.js');
-const Constants = require('./constants.js').Constants;
+const Constants = require('./loadJSON.js').Constants;
 const c = require('./Character.js');
 const Items = require('./Items.js');
 
@@ -32,6 +32,11 @@ class Job {
         } else {
             // TODO: handle when a quest does not provide the character
             // that gives the protagonist the job.
+            this.giver = {
+                firstName: "ERROR",
+                location: "ERROR",
+                area: "ERROR"
+            }
         }
 
         // Used in rule when conditional statement to determine what

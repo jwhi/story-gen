@@ -32,7 +32,7 @@
 const RuleEngine = require('node-rules');
 const generalRules = require('./rules/GeneralRules.js');
 const coreRules = require('./rules/CoreRules.js');
-const Constants = require('./constants.js').Constants;
+const Constants = require('./loadJSON.js').Constants;
 const c = require('./Character.js');
 const w = require('./World.js')
 
@@ -84,6 +84,31 @@ var initialFact = {
      */
     queueOutput(storyText) {
         if (storyText.length > 0) {
+            if (storyText.indexOf('#') >= 0) {
+                var variableMap = {
+                    hero: this.protagonist.firstName,
+                    heroLocation: this.protagonist.getCurrentTown(),
+                    season: this.world.getSeason(),
+                    nextSeason: this.world.getNextSeason(),
+                    daysUntilNextSeason: this.world.getDaysUntilNextSeason()
+                };
+
+                if (this.currentJob) {
+                    variableMap['jobGiver'] = this.currentJob.giver.firstName,
+                    variableMap['jobGiverLocation'] = this.currentJob.giver.location,
+                    variableMap['jobGiverArea'] = this.currentJob.giver.area
+                }
+
+                storyText = storyText.replace(/(?:\#)(\w+)/gi, function(matched){
+                    // matched returns the variable keyword and the '#' before it, substring
+                    // will return just the variable name that we can pass into the variableMap
+                    if (!variableMap[matched.substring(1)]) {
+                        // Is not in the variableMap
+                        console.log(`ERROR: ${matched} => ${matched.substring(1)} is not in the variableMap or variable is undefined`);
+                    } 
+                    return variableMap[matched.substring(1)];
+                });
+            }
             this.output.push(storyText);
         }
     }
@@ -159,6 +184,31 @@ function StoryEngine(RE, fact) {
                     },
                     queueOutput(storyText) {
                         if (storyText.length > 0) {
+                            if (storyText.indexOf('#') >= 0) {
+                                var variableMap = {
+                                    hero: this.protagonist.firstName,
+                                    heroLocation: this.protagonist.getCurrentTown(),
+                                    season: this.world.getSeason(),
+                                    nextSeason: this.world.getNextSeason(),
+                                    daysUntilNextSeason: this.world.getDaysUntilNextSeason()
+                                };
+                
+                                if (this.currentJob) {
+                                    variableMap['jobGiver'] = this.currentJob.giver.firstName,
+                                    variableMap['jobGiverLocation'] = this.currentJob.giver.location,
+                                    variableMap['jobGiverArea'] = this.currentJob.giver.area
+                                }
+                
+                                storyText = storyText.replace(/(?:\#)(\w+)/gi, function(matched){
+                                    // matched returns the variable keyword and the '#' before it, substring
+                                    // will return just the variable name that we can pass into the variableMap
+                                    if (!variableMap[matched.substring(1)]) {
+                                        // Is not in the variableMap
+                                        console.log(`ERROR: ${matched} => ${matched.substring(1)} is not in the variableMap or variable is undefined`);
+                                    } 
+                                    return variableMap[matched.substring(1)];
+                                });
+                            }
                             this.output.push(storyText);
                         }
                     }

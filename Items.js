@@ -14,7 +14,7 @@
  * 
  *****************/
 const utility = require('./utility.js');
-const Constants = require("./constants.js").Constants;
+const Constants = require("./loadJSON.js").Constants;
 
 class Item {
     constructor(options) {

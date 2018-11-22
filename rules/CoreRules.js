@@ -12,7 +12,7 @@
 
 const readline = require('readline-sync');
 const utility = require("../utility.js");
-const Constants = require('../constants.js').Constants;
+const Constants = require('../loadJSON.js').Constants;
 
 var rules = [{
     "name": "Output",

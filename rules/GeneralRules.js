@@ -19,7 +19,7 @@
  *****************/
 
 const utility = require('../utility.js');
-const Constants = require('../constants.js').Constants;
+const Constants = require('../loadJSON.js').Constants;
 const c = require('../Character.js');
 const jobCreator = require('../Jobs.js');
 const itemCreator = require('../Items.js');
@@ -84,7 +84,7 @@ var rules = [{
     },
     "consequence": function (R) {
         this.flags['searchForJob'] = true;
-        this.queueOutput(`${this.protagonist.firstName} needs to find work before ${this.world.getNextSeason()} comes in ${this.world.getDaysUntilNextSeason()} days.`)
+        this.queueOutput(`#hero needs to find work before #nextSeason comes in #daysUntilNextSeason days.`)
         R.restart();
     }
 },{
@@ -105,10 +105,10 @@ var rules = [{
         this.debug["findProvisionsBasic"] = (this.debug["findProvisionsBasic"] ? this.debug["findProvisionsBasic"] += 1 : this.debug["findProvisionsBasic"] = 1);
         
         if (this.debug["findProvisionsBasic"] < 3) {
-            this.queueOutput(`Searching for food in the woods near ${this.protagonist.getCurrentTown()}.`);
-            this.queueOutput(`${this.protagonist.firstName} grabbed some of their favorite berries.`)
+            this.queueOutput(`Searching for food in the woods near #heroLocation.`);
+            this.queueOutput(`#hero grabbed some of their favorite berries.`)
         } else {
-            this.queueOutput(`${this.protagonist.firstName} had to settle for some bland but edible plants.`);
+            this.queueOutput(`#hero had to settle for some bland but edible plants.`);
         }
         this.protagonist.provisions += Constants.Provisions.CanBeFoundInBasicSearch;
         // Can set the flag to false instead of deleting because this flag will most likely occur a lot
@@ -146,34 +146,32 @@ var rules = [{
         }
         var jobGiver = new c.SupportingCharacter(characterOptions);
 
-        // Story segment about how the protagonist heard about this job
-        this.queueOutput(`${this.protagonist.firstName} heard a rumor that ${jobGiver.firstName} was looking for help.`);
-
-        // Story segment about getting to meet with the job giver.
-        // Can use the job giver's opinion about the protagonist and their relationship to create different story segments.
-        switch(jobGiver.opinion) {
-            case Constants.CharacterOpinions.Neighbor:
-                this.queueOutput(`${jobGiver.firstName} has lived in ${jobGiver.location} their whole life.`);
-                if (jobGiver.interactions == 0) {
-                    this.queueOutput(`This is the first time ${this.protagonist.firstName} has actually talked to them though.`)
-                }
-                break;
-        }
-
-        this.queueOutput(`After meeting with ${jobGiver.firstName} at their home, ${this.protagonist.firstName} is tasked with finding a flower.`)
-
-        // Create the job object that gets stored in the fact and will be checked against
-        // to determine when the protagonist finishes the job.
         var jobReward = new jobCreator.Reward(Constants.RewardTypes.SkillIncrease, {skill: "fighter", modifier: 5});
         var jobOptions = {
             giver: jobGiver,
             protagonistField: Constants.ProtagonistField.Item,
             successFunction: function (itemList) { for(var i = 0; i < itemList.length; i++) { if (itemList[i].name == "flower") { return true; } } return false; },
             reward: jobReward,
-            rewardText: `${jobGiver.firstName} explains this flower reminds them of the time time they spent as a soldier, but do not go into further detail. ${jobGiver.firstName} wants to pass on some of their sword fighting tips to ${this.protagonist.firstName}.`
+            rewardText: `#jobGiver explains this flower reminds them of the time time they spent as a soldier, but do not go into further detail. #jobGiver wants to pass on some of their sword fighting tips to #hero.`
         }
-        var newJob = new jobCreator.Job(jobOptions);
-        this.currentJob = newJob;
+        this.currentJob = new jobCreator.Job(jobOptions);
+        
+        // Story segment about how the protagonist heard about this job
+        this.queueOutput(`#hero heard a rumor that #jobGiver was looking for help.`);
+
+        // Story segment about getting to meet with the job giver.
+        // Can use the job giver's opinion about the protagonist and their relationship to create different story segments.
+        switch(this.currentJob.opinion) {
+            case Constants.CharacterOpinions.Neighbor:
+                this.queueOutput(`#jobGiver has lived in #jobGiverLocation their whole life.`);
+                if (jobGiver.interactions == 0) {
+                    this.queueOutput(`This is the first time #hero has actually talked to them though.`)
+                }
+                break;
+        }
+
+        this.queueOutput(`After meeting with #jobGiver at #jobGiverArea, #hero is tasked with finding a flower.`)
+
         
         // Give the protagonist a goal that will cause them to complete the job
         this.protagonist.addGoal(Constants.Goals.FindFlower);
@@ -187,6 +185,8 @@ var rules = [{
         this.flags['hasJob'] = true;
         
         this.disableRules.push('FindBasicJob');
+
+        
         
         R.restart();
     }
@@ -199,7 +199,7 @@ var rules = [{
         R.when(this.protagonist.hasGoal(Constants.Goals.FindFlower));
     },
     "consequence": function (R) {
-        this.queueOutput(`There is a small field near the forest of ${this.protagonist.getCurrentTown()} that probably has the flower ${this.currentJob.giver.firstName} is looking for.`);
+        this.queueOutput(`There is a small field near the forest of #heroLocation that probably has the flower #jobGiver is looking for.`);
         
         var itemOptions = {
             name: "flower"
@@ -207,9 +207,9 @@ var rules = [{
         var jobItem = new itemCreator.Item(itemOptions);
         this.protagonist.addItemToInventory(jobItem);
         if (this.currentJob) {
-            this.queueOutput(`There is a large patch of flowers that look exactly as ${this.currentJob.giver.firstName} described.`);
+            this.queueOutput(`There is a large patch of flowers that look exactly as #jobGiver described.`);
         } else {
-            this.queueOutput(`There is a large patch of beautiful flowers that ${this.protagonist.firstName} can't help but pick.`);
+            this.queueOutput(`There is a large patch of beautiful flowers that #hero can't help but pick.`);
         }
         this.protagonist.removeGoal(Constants.Goals.FindFlower);
         R.restart();
@@ -230,7 +230,7 @@ var rules = [{
     },
     "consequence": function (R) {
         if (this.currentJob.protagonistField == Constants.ProtagonistField.Item) {
-            this.queueOutput(`${this.protagonist.firstName} brings the item back to ${this.currentJob.giver.firstName}'s home.`);
+            this.queueOutput(`#hero brings the item back to #jobGiver's #jobGiverArea.`);
         }
         
         //this.protagonist.removeGoal(Constants.Goals.FindFlower);

@@ -1,6 +1,6 @@
 "use strict";
 const utility = require('./utility.js');
-const Constants = require('./constants.js').Constants;
+const Constants = require('./loadJSON.js').Constants;
 const n = require('./Names.js');
 const namePicker = new n.Names();
 
@@ -129,6 +129,12 @@ class SupportingCharacter {
         // interacts with this character.
         if (options.location) {
             this.location = options.location;
+        }
+
+        if (options.area) {
+            this.area = options.area;
+        } else {
+            this.area = "home";
         }
 
         // Count the number of times the protagonist has talked with this character

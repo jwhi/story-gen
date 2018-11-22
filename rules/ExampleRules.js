@@ -7,7 +7,7 @@
  *****************/
 
 const utility = require("../utility.js");
-const Constants = require("../constants.js").Constants;
+const Constants = require("../loadJSON").Constants;
 const fighterClassRules = require("./classes/fighterRules.js");
 
 var rules = [{
