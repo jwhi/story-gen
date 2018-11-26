@@ -89,7 +89,12 @@
         "AroundTown": 3
     },
     "ItemTypes": {
+        "Object": 0,
         "Food": 1
+    },
+    "JobTypes": {
+        "None": 0,
+        "Fetch": 1
     },
     "ProtagonistField": {
         "Item": 1

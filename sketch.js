@@ -83,7 +83,7 @@ var initialFact = {
      * completion of a job.
      */
     queueOutput(storyText) {
-        if (storyText.length > 0) {
+        if (storyText && storyText.length > 0) {
             if (storyText.indexOf('#') >= 0) {
                 var variableMap = {
                     hero: this.protagonist.firstName,
@@ -94,9 +94,13 @@ var initialFact = {
                 };
 
                 if (this.currentJob) {
-                    variableMap['jobGiver'] = this.currentJob.giver.firstName,
-                    variableMap['jobGiverLocation'] = this.currentJob.giver.location,
-                    variableMap['jobGiverArea'] = this.currentJob.giver.area
+                    variableMap['jobGiver'] = this.currentJob.giver.firstName;
+                    variableMap['jobGiverLocation'] = this.currentJob.giver.location;
+                    variableMap['jobGiverArea'] = this.currentJob.giver.area;
+
+                    if (this.currentJob.jobType == Constants.JobTypes.Fetch) {
+                        variableMap['fetchItem'] = this.currentJob.fetchItem;
+                    }
                 }
 
                 storyText = storyText.replace(/(?:\#)(\w+)/gi, function(matched){
@@ -183,7 +187,7 @@ function StoryEngine(RE, fact) {
                         }
                     },
                     queueOutput(storyText) {
-                        if (storyText.length > 0) {
+                        if (storyText && storyText.length > 0) {
                             if (storyText.indexOf('#') >= 0) {
                                 var variableMap = {
                                     hero: this.protagonist.firstName,
@@ -194,9 +198,13 @@ function StoryEngine(RE, fact) {
                                 };
                 
                                 if (this.currentJob) {
-                                    variableMap['jobGiver'] = this.currentJob.giver.firstName,
-                                    variableMap['jobGiverLocation'] = this.currentJob.giver.location,
-                                    variableMap['jobGiverArea'] = this.currentJob.giver.area
+                                    variableMap['jobGiver'] = this.currentJob.giver.firstName;
+                                    variableMap['jobGiverLocation'] = this.currentJob.giver.location;
+                                    variableMap['jobGiverArea'] = this.currentJob.giver.area;
+
+                                    if (this.currentJob.jobType == Constants.JobTypes.Fetch) {
+                                        variableMap['fetchItem'] = this.currentJob.fetchItem;
+                                    }
                                 }
                 
                                 storyText = storyText.replace(/(?:\#)(\w+)/gi, function(matched){

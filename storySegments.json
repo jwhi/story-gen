@@ -6,12 +6,24 @@
 		"BeginSearchForSeasonChange": "#hero needs to find work before #nextSeason comes in #daysUntilNextSeason days.",
 		"Rumor": "#hero heard a rumor that #jobGiver was looking for help.",
 		"JobGiverIntroduction": "#jobGiver has lived in #jobGiverLocation their whole life.",
-		"HeroNeverMetJobGiver": "This is the first time #hero has actually talked to them though."
+		"HeroNeverMetJobGiver": "This is the first time #hero has actually talked to them though.",
+		"StartFetchJob": "After meeting with #jobGiver at #jobGiverArea, #hero is tasked with finding a #fetchItem.",
+		"FoundFlower": "#hero notices after picking the flower that they match the description that #jobGiver gave them.",
+		"TurnInFlower": "#hero brings the item back to #jobGiver's #jobGiverArea."
 		
 	},
 	"Food": {
 		"SearchWoods": "Searching for food in the woods near #heroLocation.",
 		"WoodsFoundGoodFruit": "#hero grabbed some of their favorite berries.",
 		"WoodsFoundBlandFood": "#hero had to settle for some bland but edible plants."
+	},
+	"CharacterDescriptions": {
+		"BornInTown": "#jobGiver has lived in #jobGiverLocation their whole life.",
+		"FirstEncounterWithNeighbor": "This is the first time #hero has actually talked to them though."
+	},
+	"ItemGather": {
+		"Default": "#hero finds #fetchItem and stores it safely on their person.",
+		"Flower": "There is a large patch of beautiful flowers that #hero can't help but pick.",
+		"FlowerLocation": "There is a large patch of beautiful flowers that #hero can't help but pick."
 	}
 }

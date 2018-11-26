@@ -17,7 +17,9 @@
  * 
  *****************/
 const utility = require('./utility.js');
-const Constants = require('./loadJSON.js').Constants;
+const jsonData = require('./loadJSON.js');
+const Constants = jsonData.Constants;
+const StorySegments = jsonData.StorySegments;
 const c = require('./Character.js');
 const Items = require('./Items.js');
 
@@ -27,6 +29,11 @@ class Job {
     // be loaded in, I want to be able to automatically create the
     // all the information for a job given any information.
     constructor(options) {
+        if (options.jobType) {
+            this.jobType = options.jobType;
+        } else {
+            this.jobType = Constants.JobTypes.None;
+        }
         if (options.giver) {
             this.giver = options.giver;
         } else {
@@ -36,6 +43,14 @@ class Job {
                 firstName: "ERROR",
                 location: "ERROR",
                 area: "ERROR"
+            }
+        }
+
+        if (options.fetchItem) {
+            this.fetchItem = options.fetchItem;
+        } else {
+            if (options.jobType == Constants.JobTypes.Fetch) {
+                this.fetchItem = "ERROR";
             }
         }
 
@@ -59,6 +74,32 @@ class Job {
 
         if (options.reward) {
             this.reward = options.reward;
+        }
+
+        if (options.assignmentText) {
+            this.assignmentText = options.assignmentText;
+        } else {
+            this.assignmentText = StorySegments.Job.Rumor;
+        }
+
+        if (options.startingText) {
+            this.startingText = options.startingText;
+        } else {
+            if (this.jobType == Constants.JobTypes.Fetch) {
+                this.startingText = StorySegments.Job.StartFetchJob;
+            }
+        }
+
+        if (options.itemFetchedText) {
+            this.itemFetchedText = options.itemFetchedText;
+        } else {
+            if (this.jobType == Constants.JobTypes.Fetch) {
+                this.itemFetchedText = StorySegments.ItemGather.Default;
+            }
+        }
+
+        if (options.itemTurnIn) {
+            this.itemTurnIn = options.itemTurnIn;
         }
 
         if (options.rewardText) {

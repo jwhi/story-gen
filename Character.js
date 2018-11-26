@@ -1,6 +1,8 @@
 "use strict";
 const utility = require('./utility.js');
-const Constants = require('./loadJSON.js').Constants;
+const jsonData = require('./loadJSON.js');
+const Constants = jsonData.Constants;
+const StorySegments = jsonData.StorySegments;
 const n = require('./Names.js');
 const namePicker = new n.Names();
 
@@ -137,8 +139,29 @@ class SupportingCharacter {
             this.area = "home";
         }
 
+        if (options.description) {
+            this.description = options.description;
+        }
+
         // Count the number of times the protagonist has talked with this character
         this.interactions = 0;
+    }
+
+    getFullDescription() {
+        var desc = '';
+        switch(this.opinion) {
+            case Constants.CharacterOpinions.Neighbor:
+                desc += StorySegments.CharacterDescriptions.BornInTown;
+                if (this.interactions == 0) {
+                    desc += `\n${StorySegments.CharacterDescriptions.FirstEncounterWithNeighbor}`;
+                }
+                break;
+        }
+        if (this.description) {
+            return this.description += `\n${desc}`;
+        }
+
+        return desc;
     }
 }
 
