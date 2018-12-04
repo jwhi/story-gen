@@ -1,0 +1,23 @@
+{
+    "Default": {
+        "ItemType": 0,
+        "Name": "object",
+        "Description": "It takes up an average amount of space."
+    },
+    "SampleFood": {
+        "ItemType": 1,
+        "Name": "a small loaf of bread",
+        "Description": "It doesn't look like it will keep long, but it will still fill the stomach when hungry.",
+        "DaysBeforeRotten": 7,
+        "ActionText": "It tastes bland but it is a meal.",
+        "RottenActionText": "This should have been eaten a lot sooner.",
+        "ProvisionsGiven": 3,
+        "ProvisionsGivenRotten": 1,
+        "SicknessChance": 1
+    },
+    "SpringFlower": {
+        "ItemType": 0,
+        "Name": "flower",
+        "Description": "A tiny purple and white flower that grows in the spring."
+    }
+}

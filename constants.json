@@ -59,8 +59,10 @@
         "FindBasicJob": 7,
         "NeedJob": 8,
         "BasicGoalProgress": 9,
+        "FindEvent": 10,
+        "CompleteJob": 11,
         "FindProvisionsBasic": 13,
-        "CompleteJob": 14,
+        "CompleteEvent": 14,
         "NeedProvisionsImmediately": 15,
         "EndStory": 16,
         "ExitStory": 18,
@@ -92,12 +94,22 @@
         "Object": 0,
         "Food": 1
     },
+    "Food": {
+        "DefaultSicknessChance": 3,
+        "DefaultProvisionsGiven": 6,
+        "DefaultProvisionsGivenRotten": 1
+    },
     "JobTypes": {
         "None": 0,
         "Fetch": 1
     },
     "ProtagonistField": {
         "Item": 1
+    },
+    "WorldField": {
+        "Day": 1,
+        "Year": 2,
+        "Season": 3
     },
     "RewardTypes": {
         "SkillIncrease": 1,

@@ -56,7 +56,10 @@ class Character {
         }
     }
 
-    addItemToInventory(item) {
+    addItemToInventory(item, day) {
+        if (day) {
+            item.dayReceived = day;
+        }
         this.items.push(item);
     }
 
@@ -156,6 +159,8 @@ class SupportingCharacter {
                     desc += `\n${StorySegments.CharacterDescriptions.FirstEncounterWithNeighbor}`;
                 }
                 break;
+            case Constants.CharacterOpinions.Friend:
+                desc += `${StorySegments.CharacterDescriptions.FriendsRoughTimes}`;
         }
         if (this.description) {
             return this.description += `\n${desc}`;

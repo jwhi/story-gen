@@ -21,7 +21,7 @@ const jsonData = require('./loadJSON.js');
 const Constants = jsonData.Constants;
 const StorySegments = jsonData.StorySegments;
 const c = require('./Character.js');
-const Items = require('./Items.js');
+const itemCreator = require('./Items.js');
 
 class Job {
     // Everything is going into an options file right now because
@@ -37,8 +37,9 @@ class Job {
         if (options.giver) {
             this.giver = options.giver;
         } else {
-            // TODO: handle when a quest does not provide the character
-            // that gives the protagonist the job.
+            // I don't know the best way to handle when no job giver
+            // is assigned. This will happen often because of how I handle
+            // job creation/storage in the functions down below that fetches jobs
             this.giver = {
                 firstName: "ERROR",
                 location: "ERROR",
@@ -63,6 +64,10 @@ class Job {
             // This protagonist check is directly related to the
             // success check. If this is not included in the options,
             // need to determine from the success function.
+        }
+
+        if (options.worldField != null) {
+            this.worldField = options.worldField;
         }
 
         if (options.successFunction) {
@@ -105,6 +110,10 @@ class Job {
         if (options.rewardText) {
             this.rewardText = options.rewardText;
         }
+
+        if (options.dayAssigned) {
+            this.dayAssigned = options.dayAssigned;
+        }
     }
 }
 
@@ -120,4 +129,76 @@ class Reward {
     }
 }
 
-module.exports = {Job, Reward}
+var FightingJobs = [
+    // Fetch a flower for your neighbor
+    new Job({
+        jobType: Constants.JobTypes.Fetch,
+        fetchItem: "flower",
+        itemFetchedText: StorySegments.Job.FoundFlower,
+        itemTurnIn: StorySegments.Job.TurnInFlower,
+        protagonistField: Constants.ProtagonistField.Item,
+        successFunction: function (itemList) { for(var i = 0; i < itemList.length; i++) { if (itemList[i].name == this.fetchItem) { return true; } } return false; },
+        reward: new Reward(Constants.RewardTypes.SkillIncrease, {skill: "fighter", modifier: 5}),
+        rewardText: `#jobGiver explains this flower reminds them of the time time they spent as a soldier, but do not go into further detail. #jobGiver wants to pass on some of their sword fighting tips to #hero.`
+    
+    })
+];
+
+var WorldEvents = [
+    // Wait 10 days and someone will come over
+    new Job({
+        jobType: Constants.JobTypes.None,
+        worldField: Constants.WorldField.Day,
+        assignmentText: StorySegments.Event.CharityFood,
+        startingText: "#eventGiver wants to give you food. It will take them a few days to gather what they need.",
+        successFunction: function (currentDay) { if (currentDay < (this.dayAssigned + 10)) { return false; } return true; },
+        reward: new Reward(Constants.RewardTypes.Item, new itemCreator.Item('SampleFood')),
+        rewardText: `#eventGiver finished making food and brought you some.`
+    })
+]
+
+function getFightingJob(giver, day) {
+    if (!giver) {
+        var characterOptions = {
+            //firstName:
+            //lastName:
+            //relationship:
+            opinion: Constants.CharacterOpinions.Neighbor
+        }
+        var giver = new c.SupportingCharacter(characterOptions);
+    }
+    if (FightingJobs.length > 0) {
+        var job = FightingJobs.pop();
+        job.giver = giver;
+        if (day) {
+            job.dayAssigned = day;
+        }
+        return job;
+    }
+
+    return null;
+    
+}
+
+function getEvent(giver, day) {
+    if (!giver) {
+        var characterOptions = {
+            //firstName:
+            //lastName:
+            //relationship:
+            opinion: Constants.CharacterOpinions.Friend
+        }
+        var giver = new c.SupportingCharacter(characterOptions);
+    }
+    if (WorldEvents.length > 0) {
+        var event = WorldEvents.pop();
+        event.giver = giver;
+        if (day) {
+            event.dayAssigned = day;
+        }
+        return event;
+    }
+}
+
+
+module.exports = {Job, Reward, getFightingJob, getEvent}

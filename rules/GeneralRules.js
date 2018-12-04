@@ -41,6 +41,9 @@ var rules = [{
     "consequence": function (R) {
         this.passDay();
         this.debug["passedDayCount"] = (this.debug["passedDayCount"] ? this.debug["passedDayCount"] += 1 : this.debug["passedDayCount"] = 1);
+        if (this.debug["passedDayCount"] > 2) {
+            this.flags['findEvent'] = true;
+        }
         R.restart();
     }
 },{
@@ -71,7 +74,26 @@ var rules = [{
         R.when(!this.flags['provisionsNeeded'] && (this.protagonist.provisions <= Constants.Provisions.UsedPerDay));
     },
     "consequence": function (R) {
-        this.flags['provisionsNeeded'] = true;
+        // want to keep track of who gives the item and expand the text when food items are used.
+        for(var i = 0; i < this.protagonist.items.length; i++) {
+            var protagonistItem = this.protagonist.items[i];
+            if (protagonistItem.itemType == Constants.ItemTypes.Food) {
+                this.queueOutput(`#hero eats ${protagonistItem} from their bag.`)
+                if (protagonistItem.dayReceived + protagonistItem.daysBeforeRotten < this.world.getCurrentDay()) {
+                    this.queueOutput(protagonistItem.rottenActionText);
+                    this.protagonist.provisions += protagonistItem.provisionsGivenRotten;
+                } else {
+                    this.queueOutput(protagonistItem.actionText);
+                    this.protagonist.provisions += protagonistItem.provisionsGiven;
+                }
+                // Remove item from inventory after it is eaten.
+                this.protagonist.items.splice(i,1);
+            }
+        }
+
+        if (this.protagonist.provisions <= Constants.Provisions.UsedPerDay) {
+            this.flags['provisionsNeeded'] = true;
+        }
         R.restart();
     }
 },{
@@ -148,50 +170,75 @@ var rules = [{
         }
         var jobGiver = new c.SupportingCharacter(characterOptions);
 
-        var jobReward = new jobCreator.Reward(Constants.RewardTypes.SkillIncrease, {skill: "fighter", modifier: 5});
-        var jobOptions = {
-            jobType: Constants.JobTypes.Fetch,
-            fetchItem: "flower",
-            itemFetchedText: StorySegments.Job.FoundFlower,
-            itemTurnIn: StorySegments.Job.TurnInFlower,
-            giver: jobGiver,
-            protagonistField: Constants.ProtagonistField.Item,
-            successFunction: function (itemList) { for(var i = 0; i < itemList.length; i++) { if (itemList[i].name == this.fetchItem) { return true; } } return false; },
-            reward: jobReward,
-            rewardText: `#jobGiver explains this flower reminds them of the time time they spent as a soldier, but do not go into further detail. #jobGiver wants to pass on some of their sword fighting tips to #hero.`
-        }
-        this.currentJob = new jobCreator.Job(jobOptions);
+        this.currentJob = jobCreator.getFightingJob(jobGiver, this.world.getCurrentDay());
         
-        // Story segment about how the protagonist heard about this job
-        this.queueOutput(this.currentJob.assignmentText);
+        // Only want to display job story text if the fetch to jobCreator worked
+        if (this.currentJob) {
+            // Story segment about how the protagonist heard about this job
+            this.queueOutput(this.currentJob.assignmentText);
 
-        // Story segment about getting to meet with the job giver.
-        // Can use the job giver's opinion about the protagonist and their relationship to create different story segments.
-        this.queueOutput(this.currentJob.giver.getFullDescription());
+            // Story segment about getting to meet with the job giver.
+            // Can use the job giver's opinion about the protagonist and their relationship to create different story segments.
+            this.queueOutput(this.currentJob.giver.getFullDescription());
 
-        if (this.currentJob.startingText) {
-            this.queueOutput(this.currentJob.startingText);
-        }
-        
-        if (this.currentJob.jobType == Constants.JobTypes.Fetch) {
-            if (this.currentJob.fetchItem == "flower") {
-                // Give the protagonist a goal that will cause them to complete the job
-                this.protagonist.addGoal(Constants.Goals.FindFlower);
+            if (this.currentJob.startingText) {
+                this.queueOutput(this.currentJob.startingText);
             }
+            
+            if (this.currentJob.jobType == Constants.JobTypes.Fetch) {
+                if (this.currentJob.fetchItem == "flower") {
+                    // Give the protagonist a goal that will cause them to complete the job
+                    this.protagonist.addGoal(Constants.Goals.FindFlower);
+                }
+            }
+
+            // Flags do not get changed until the end.
+            // Once job information is loaded from a file or database, want
+            // to make sure the job is able to be created successfully so
+            // the protagonist does not start their quest to complete a
+            // corrupted job.
+            this.flags['searchForJob'] = false;
+            this.flags['hasJob'] = true;
+        } else {
+            // Disable basic job find once the list of jobs is empty
+            this.disableRules.push('FindBasicJob');
         }
+        
+        this.passDay();
+        R.restart();
+    }
+},{
+    /************* Start of checks that related to events *************/
+    "name": "FindEvent",
+    "priority": Constants.Priorities.FindEvent,
+    "on" : true,
+    "condition": function (R) {
+        R.when(this.flags['findEvent']);
+    },
+    "consequence": function (R) {
+        var characterOptions = {
+            //firstName:
+            //lastName:
+            //relationship:
+            opinion: Constants.CharacterOpinions.Friend,
+            location: this.protagonist.getCurrentTown()
+        }
+        var jobGiver = new c.SupportingCharacter(characterOptions);
 
-        // Flags do not get changed until the end.
-        // Once job information is loaded from a file or database, want
-        // to make sure the job is able to be created successfully so
-        // the protagonist does not start their quest to complete a
-        // corrupted job.
-        this.flags['searchForJob'] = false;
-        this.flags['hasJob'] = true;
+        this.lastEvent = jobCreator.getEvent(jobGiver, this.world.getCurrentDay());
         
-        this.disableRules.push('FindBasicJob');
+        if (this.lastEvent) {
+            this.events.push(this.lastEvent);
+            this.queueOutput(this.lastEvent.assignmentText.replace('#jobGiver','#eventGiver'));
+            if (this.lastEvent.startingText) {
+                this.queueOutput(this.lastEvent.startingText.replace('#jobGiver','#eventGiver'));
+            }
+            this.queueOutput(this.lastEvent.giver.getFullDescription().replace('#jobGiver','#eventGiver'));
 
-        
-        
+            this.flags['findEvent'] = false;
+        } else {
+            this.disableRules.push('FindEvent');
+        }
         R.restart();
     }
 },{
@@ -205,16 +252,17 @@ var rules = [{
     "consequence": function (R) {
         this.queueOutput(StorySegments.ItemGather.FlowerLocation);
         
-        var itemOptions = {
-            name: "flower"
-        }
-        var jobItem = new itemCreator.Item(itemOptions);
-        this.protagonist.addItemToInventory(jobItem);
+        var jobItem = new itemCreator.Item(`${this.world.getSeason()}Flower`);
+        
         if (this.currentJob && this.currentJob.jobType == Constants.JobTypes.Fetch) {
             this.queueOutput(this.currentJob.itemFetchedText);
         } else {
             this.queueOutput(StorySegments.ItemGather.Default);
         }
+
+        this.protagonist.addItemToInventory(jobItem, this.world.getCurrentDay());
+        this.queueOutput(StorySegments.ItemGather.PlacedItemInBag);
+
         this.protagonist.removeGoal(Constants.Goals.FindFlower);
         R.restart();
     }
@@ -230,7 +278,7 @@ var rules = [{
     "priority": Constants.Priorities.CompleteJob,
     "on" : true,
     "condition": function (R) {
-        R.when(this.currentJob && this.currentJob.successFunction(this.protagonist.getValueFromField(this.currentJob.protagonistField)));
+        R.when(this.currentJob && ((this.currentJob.protagonistField && this.currentJob.successFunction(this.protagonist.getValueFromField(this.currentJob.protagonistField)))));
     },
     "consequence": function (R) {
         if (this.currentJob.protagonistField == Constants.ProtagonistField.Item && this.currentJob.itemTurnIn) {
@@ -243,6 +291,9 @@ var rules = [{
             var jobReward = this.currentJob.reward;
             if (jobReward.rewardType == Constants.RewardTypes.SkillIncrease) {
                this.protagonist.modifySkillFromName(jobReward.rewardObject.skill, jobReward.rewardObject.modifier);
+            } else if (jobReward.rewardType == Constants.RewardTypes.Item) {
+                this.protagonist.addItemToInventory(jobReward.rewardObject);
+                this.queueOutput(StorySegments.Job.ItemReward);
             }
         }
         
@@ -255,6 +306,39 @@ var rules = [{
         delete this.currentJob;
         
         this.flags['hasJob'] = false;
+        this.passDay();
+        R.restart();
+    }
+},{
+	"name": "EventSuccess",
+    "priority": Constants.Priorities.CompleteEvent,
+    "on" : true,
+    "condition": function (R) {
+        R.when(this.checkEvents() != -1);
+    },
+    "consequence": function (R) {
+        var completedEvent = this.checkEvents();
+        var event = this.events[completedEvent];
+        this.lastEvent = this.events[completedEvent];
+		if (this.lastEvent.reward) {
+            if (event.rewardText) {
+                this.queueOutput(event.rewardText.replace('#jobGiver','#eventGiver'));
+            }
+            var eventReward = this.lastEvent.reward;
+            if (eventReward.rewardType == Constants.RewardTypes.SkillIncrease) {
+               this.protagonist.modifySkillFromName(eventReward.rewardObject.skill, eventReward.rewardObject.modifier);
+            } else if (eventReward.rewardType == Constants.RewardTypes.Item) {
+                this.protagonist.addItemToInventory(eventReward.rewardObject);
+                this.queueOutput(StorySegments.Job.ItemReward.replace('#jobGiver','#eventGiver'));
+            }
+        }
+        
+        
+
+        // Delete this job from the fact after the fact and story
+        // finish updating.
+        this.events = this.events.slice(0, completedEvent).concat(this.events.slice(completedEvent+1));;
+        
         this.passDay();
         R.restart();
     }

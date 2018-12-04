@@ -9,21 +9,27 @@
 		"HeroNeverMetJobGiver": "This is the first time #hero has actually talked to them though.",
 		"StartFetchJob": "After meeting with #jobGiver at #jobGiverArea, #hero is tasked with finding a #fetchItem.",
 		"FoundFlower": "#hero notices after picking the flower that they match the description that #jobGiver gave them.",
-		"TurnInFlower": "#hero brings the item back to #jobGiver's #jobGiverArea."
-		
+		"TurnInFlower": "#hero brings the #fetchItem back to #jobGiver's #jobGiverArea.",
+		"ItemReward": "#jobGiver gave you #item. #itemDescription"
+	},
+	"Event": {
+		"CharityFood": "People around #heroLocation have noticed that #hero is struggling with food."
 	},
 	"Food": {
 		"SearchWoods": "Searching for food in the woods near #heroLocation.",
 		"WoodsFoundGoodFruit": "#hero grabbed some of their favorite berries.",
-		"WoodsFoundBlandFood": "#hero had to settle for some bland but edible plants."
+		"WoodsFoundBlandFood": "#hero had to settle for some bland but edible plants.",
+		"DefaultEatingFood": "Not the most amazing meal #hero has had, but it keeps the starvation away.",
+		"DefaultEatingRottenFood": "#hero has no other option but to eat the spoiled food. #hero yearns for the day that fresh food is easy to find."
 	},
 	"CharacterDescriptions": {
 		"BornInTown": "#jobGiver has lived in #jobGiverLocation their whole life.",
-		"FirstEncounterWithNeighbor": "This is the first time #hero has actually talked to them though."
+		"FirstEncounterWithNeighbor": "This is the first time #hero has actually talked to them though.",
+		"FriendsRoughTimes": "Even when times are tough, #hero and #jobGiver try to take care of each other."
 	},
 	"ItemGather": {
 		"Default": "#hero finds #fetchItem and stores it safely on their person.",
-		"Flower": "There is a large patch of beautiful flowers that #hero can't help but pick.",
-		"FlowerLocation": "There is a large patch of beautiful flowers that #hero can't help but pick."
+		"FlowerLocation": "There is a large patch of beautiful flowers that #hero can't help but pick.",
+		"PlacedItemInBag": "#hero takes a look at the #item before placing it in their bag. #itemDescription"
 	}
 }

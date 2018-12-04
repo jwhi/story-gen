@@ -1,5 +1,4 @@
 "use strict";
-
 /******************
  * Production-Rule System Story Generator
  * by Jeremy White
@@ -43,84 +42,16 @@ var R = new RuleEngine();
 R.register(coreRules.rules);
 R.register(generalRules.rules);
 
-var protagonist = new c.Character("Jeremy", "White");
-var world = new w.World();
-
 /* Add a Fact with the protagonist's information */
-var initialFact = {
-    "protagonist": protagonist,
-    "world": world,
-    "flags": {},
-    "end": false,
-    "currentRuleFiles": [],
-    "disableRules": [],
-    "addRuleFile": [],
-    "output": [],
-    "debug": {},
-    
-    // All story rules that include actions or story events need to progress time.
-    // This function handles the updates that happen every day no matter what.
-    passDay(daysToPass) {
-        if (daysToPass) {
-            this.world.passDay(daysToPass);
-            this.protagonist.provisions -= (Constants.Provisions.UsedPerDay * daysToPass);
-        } else {
-            this.world.passDay();
-            this.protagonist.provisions -= Constants.Provisions.UsedPerDay;
-        }
-    },
+var initialFact = createFact();
 
-    /*
-     * Adds a function to handle adding text to the output. This will
-     * save the pain of calling this.output.push('text') every time 
-     * a fact queues output to be written by the output rule.
-     * This function will also allow us to do any input sanitation if needed,
-     * update the output to another object if needed in the future without
-     * needing to rewrite a majority of the rules.
-     * This would open up more opportunities to include variables in story
-     * segments. For example, right now job reward text can not use text
-     * stored in the item description when the item is turned in on the
-     * completion of a job.
-     */
-    queueOutput(storyText) {
-        if (storyText && storyText.length > 0) {
-            if (storyText.indexOf('#') >= 0) {
-                var variableMap = {
-                    hero: this.protagonist.firstName,
-                    heroLocation: this.protagonist.getCurrentTown(),
-                    season: this.world.getSeason(),
-                    nextSeason: this.world.getNextSeason(),
-                    daysUntilNextSeason: this.world.getDaysUntilNextSeason()
-                };
-
-                if (this.currentJob) {
-                    variableMap['jobGiver'] = this.currentJob.giver.firstName;
-                    variableMap['jobGiverLocation'] = this.currentJob.giver.location;
-                    variableMap['jobGiverArea'] = this.currentJob.giver.area;
-
-                    if (this.currentJob.jobType == Constants.JobTypes.Fetch) {
-                        variableMap['fetchItem'] = this.currentJob.fetchItem;
-                    }
-                }
-
-                storyText = storyText.replace(/(?:\#)(\w+)/gi, function(matched){
-                    // matched returns the variable keyword and the '#' before it, substring
-                    // will return just the variable name that we can pass into the variableMap
-                    if (!variableMap[matched.substring(1)]) {
-                        // Is not in the variableMap
-                        console.log(`ERROR: ${matched} => ${matched.substring(1)} is not in the variableMap or variable is undefined`);
-                    } 
-                    return variableMap[matched.substring(1)];
-                });
-            }
-            this.output.push(storyText);
-        }
-    }
-};
+//console.log(`Total rules: ${R.rules.length}\tActive rules: ${R.activeRules.length}`);
+StoryEngine(R, initialFact);
 
 /* Create a story! */
 function StoryEngine(RE, fact) {
     RE.execute(fact, function (data) {
+        //console.log(data);
         //console.log("PROTAGONIST DATA");
         //console.log(data.protagonist);
         //console.log("WORLD DATA");
@@ -163,72 +94,113 @@ function StoryEngine(RE, fact) {
                 }
                 rulesUpdated = true;
             }
-            
-            // If there were updates to the rules, run the rule engine again.
-            // If there was not any updates, then we just end the story.
             if (rulesUpdated) {
-                var newFact = {
-                    "protagonist": data.protagonist,
-                    "world": data.world,
-                    "flags": data.flags,
-                    "end": false,
-                    "currentRuleFiles": data.currentRuleFiles,
-                    "disableRules": [],
-                    "addRuleFile": [],
-                    "output": data.output,
-                    "debug": data.debug,
-                    passDay(daysToPass) {
-                        if (daysToPass) {
-                            this.world.passDay(daysToPass);
-                            this.protagonist.provisions -= (Constants.Provisions.UsedPerDay * daysToPass);
-                        } else {
-                            this.world.passDay();
-                            this.protagonist.provisions -= Constants.Provisions.UsedPerDay;
-                        }
-                    },
-                    queueOutput(storyText) {
-                        if (storyText && storyText.length > 0) {
-                            if (storyText.indexOf('#') >= 0) {
-                                var variableMap = {
-                                    hero: this.protagonist.firstName,
-                                    heroLocation: this.protagonist.getCurrentTown(),
-                                    season: this.world.getSeason(),
-                                    nextSeason: this.world.getNextSeason(),
-                                    daysUntilNextSeason: this.world.getDaysUntilNextSeason()
-                                };
-                
-                                if (this.currentJob) {
-                                    variableMap['jobGiver'] = this.currentJob.giver.firstName;
-                                    variableMap['jobGiverLocation'] = this.currentJob.giver.location;
-                                    variableMap['jobGiverArea'] = this.currentJob.giver.area;
-
-                                    if (this.currentJob.jobType == Constants.JobTypes.Fetch) {
-                                        variableMap['fetchItem'] = this.currentJob.fetchItem;
-                                    }
-                                }
-                
-                                storyText = storyText.replace(/(?:\#)(\w+)/gi, function(matched){
-                                    // matched returns the variable keyword and the '#' before it, substring
-                                    // will return just the variable name that we can pass into the variableMap
-                                    if (!variableMap[matched.substring(1)]) {
-                                        // Is not in the variableMap
-                                        console.log(`ERROR: ${matched} => ${matched.substring(1)} is not in the variableMap or variable is undefined`);
-                                    } 
-                                    return variableMap[matched.substring(1)];
-                                });
-                            }
-                            this.output.push(storyText);
-                        }
-                    }
-                };
-                if (data.currentJob) {
-                    newFact.currentJob = data.currentJob;
-                }
-
-                StoryEngine(RE, newFact);
+                StoryEngine(RE, createFact(data));
             }
         }
     });
 }
-console.log(`Total rules: ${R.rules.length}\tActive rules: ${R.activeRules.length}`);
-StoryEngine(R, initialFact);
+
+function createFact(factInformation) {
+    var fact = {};
+    fact.protagonist = (factInformation && factInformation.protagonist) ? factInformation.protagonist : new c.Character("Jeremy", "White");
+    fact.world = (factInformation && factInformation.world) ? factInformation.world : new w.World();
+    fact.flags = (factInformation && factInformation.flags) ? factInformation.flags : {};
+    fact.end = false;
+    fact.currentRuleFiles = (factInformation && factInformation.currentRuleFiles) ? factInformation.currentRuleFiles : [];
+    fact.disableRules = [];
+    fact.addRuleFile = [];
+    fact.output =  (factInformation && factInformation.output) ? factInformation.output : [];
+    fact.debug = (factInformation && factInformation.debug) ? factInformation.debug : {};
+    
+    if (factInformation && factInformation.currentJob) {
+        fact.currentJob = factInformation.currentJob;
+    }
+    
+    if (factInformation && factInformation.lastEvent) {
+        fact.lastEvent = factInformation.lastEvent;
+    }
+
+    fact.events = (factInformation && factInformation.events) ? factInformation.events : [];
+    fact.passDay = function(daysToPass) {
+        if (daysToPass) {
+            this.world.passDay(daysToPass);
+            this.protagonist.provisions -= (Constants.Provisions.UsedPerDay * daysToPass);
+        } else {
+            this.world.passDay();
+            this.protagonist.provisions -= Constants.Provisions.UsedPerDay;
+        }
+    };
+    
+    /*
+     * Adds a function to handle adding text to the output. This will
+     * save the pain of calling this.output.push('text') every time 
+     * a fact queues output to be written by the output rule.
+     * This function will also allow us to do any input sanitation if needed,
+     * update the output to another object if needed in the future without
+     * needing to rewrite a majority of the rules.
+     * This would open up more opportunities to include variables in story
+     * segments. For example, right now job reward text can not use text
+     * stored in the item description when the item is turned in on the
+     * completion of a job.
+     */
+    fact.queueOutput = function(storyText) {
+        if (storyText && storyText.length > 0) {
+            if (storyText.indexOf('#') >= 0) {
+                var variableMap = {
+                    hero: this.protagonist.firstName,
+                    heroLocation: this.protagonist.getCurrentTown(),
+                    season: this.world.getSeason(),
+                    nextSeason: this.world.getNextSeason(),
+                    daysUntilNextSeason: this.world.getDaysUntilNextSeason()
+                };
+
+                if (this.currentJob) {
+                    variableMap['jobGiver'] = this.currentJob.giver.firstName;
+                    variableMap['jobGiverLocation'] = this.currentJob.giver.location;
+                    variableMap['jobGiverArea'] = this.currentJob.giver.area;
+
+                    if (this.currentJob.jobType == Constants.JobTypes.Fetch) {
+                        variableMap['fetchItem'] = this.currentJob.fetchItem;
+                    }
+                }
+                
+                if (this.lastEvent) {
+                    variableMap['eventGiver'] = this.lastEvent.giver.firstName;
+                    variableMap['eventGiverLocation'] = this.lastEvent.giver.location;
+                    variableMap['eventGiverArea'] = this.lastEvent.area;
+                }
+
+                if (this.protagonist.items.length > 0) {
+                    var lastItemAddedToBag = this.protagonist.items[this.protagonist.items.length - 1];
+                    variableMap['item'] = lastItemAddedToBag.name;
+                    variableMap['itemDescription'] = lastItemAddedToBag.description;
+                }
+
+                storyText = storyText.replace(/(?:\#)(\w+)/gi, function(matched){
+                    // matched returns the variable keyword and the '#' before it, substring
+                    // will return just the variable name that we can pass into the variableMap
+                    if (!variableMap[matched.substring(1)]) {
+                        // Is not in the variableMap
+                        console.log(`ERROR: ${matched} => ${matched.substring(1)} is not in the variableMap or variable is undefined`);
+                    } 
+                    return variableMap[matched.substring(1)];
+                });
+            }
+            this.output.push(storyText);
+        }
+    };
+
+    fact.checkEvents = function() {
+        for (var i = 0; i < this.events.length; i++) {
+            if (this.events[i].worldField) {
+                if (this.events[i].successFunction(this.world.getValueFromField(this.events[i].worldField))) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    };
+
+    return fact;
+}

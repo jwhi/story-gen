@@ -96,6 +96,23 @@ class World {
         // values for all 4 seasons, then just return the default
         return Constants.Provisions.NeededDefault;
     }
+
+    getCurrentDay() {
+        return (this.Year * this.LengthOfYear) + this.Day;
+    }
+
+    getValueFromField(field) {
+        switch(field) {
+            case Constants.WorldField.Day:
+                return this.getCurrentDay();
+            case Constants.WorldField.Year:
+                return this.Year;
+            case Constants.WorldField.Season:
+                return this.getSeason();
+            default:
+                return null;
+        }
+    }
 }
 
 module.exports = { World };
