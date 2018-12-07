@@ -180,7 +180,7 @@ class SupportingCharacter {
                 desc += `${this.firstName} is known for protecting ${this.location}.`
                 break;
             default:
-                desc += `Not much is known about ${this.firstName}`;
+                desc += `Not much is known about ${this.firstName}.`;
                 break;
         }
 

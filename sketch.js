@@ -262,6 +262,9 @@ function createFact(factInformation) {
 
     fact.getRandomTownPerson = function() {
         var characterKey = this.protagonist.getCurrentTown();
+        if (!this.characters[characterKey]) {
+            return;
+        }
         var townPeople = (this.characters[characterKey].townPeople) ? this.characters[characterKey].townPeople : [];
         if (townPeople.length > 0) {
             var index = utility.getRandomInt(townPeople.length -1);
