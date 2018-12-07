@@ -10,7 +10,7 @@
 		"StartFetchJob": "After meeting with #jobGiver at #jobGiverArea, #hero is tasked with finding a #fetchItem.",
 		"FoundFlower": "#hero notices after picking the flower that they match the description that #jobGiver gave them.",
 		"TurnInFlower": "#hero brings the #fetchItem back to #jobGiver's #jobGiverArea.",
-		"ItemReward": "#jobGiver gave you #item. #itemDescription"
+		"ItemReward": "#jobGiver gave #hero #item. #itemDescription"
 	},
 	"Event": {
 		"CharityFood": "People around #heroLocation have noticed that #hero is struggling with food."

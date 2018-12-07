@@ -95,7 +95,7 @@ var rules = [{
                     this.protagonist.provisions += protagonistItem.provisionsGiven;
                 }
                 // Remove item from inventory after it is eaten.
-                this.protagonist.items.splice(i,1);
+                this.protagonist.removeItemFromInventory(protagonistItem.name);
             }
         }
 
@@ -407,10 +407,15 @@ var rules = [{
         R.when(this.currentJob && ((this.currentJob.protagonistField && this.currentJob.successFunction(this.protagonist.getValueFromField(this.currentJob.protagonistField)))));
     },
     "consequence": function (R) {
-        if (this.currentJob.protagonistField == Constants.ProtagonistField.Item && this.currentJob.itemTurnIn) {
-            this.queueOutput(this.currentJob.itemTurnIn);
+        if (this.currentJob.protagonistField == Constants.ProtagonistField.Item) {
+
+            this.protagonist.removeItemFromInventory(this.currentJob.fetchItem);
+
+            if (this.currentJob.itemTurnIn) {
+                this.queueOutput(this.currentJob.itemTurnIn);
+            }
         }
-        
+
         //this.protagonist.removeGoal(Constants.Goals.FindFlower);
         
         if (this.currentJob.reward) {

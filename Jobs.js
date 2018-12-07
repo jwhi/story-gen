@@ -155,7 +155,7 @@ var FightingJobs = [
         }),
         startingText: "#jobGiver's son recently left town and they need help harvesting their small plot of cabbages.",
         itemFetchedText: "#jobGiver's fields were overgrown with weeds but there are still plenty of healthy cabbages to harvest.",
-        itemTurnIn: "#jobGiver thanks #hero. #jobGiver is now able to fill the empty barrels in their home with the cabbages.",
+        itemTurnIn: "#hero returns to #jobGiver's home with arms and bag filled with greens. #jobGiver is now able to fill the empty barrels in their home with the cabbages.",
         protagonistField: Constants.ProtagonistField.Item,
         successFunction: function (itemList) { for(var i = 0; i < itemList.length; i++) { if (itemList[i].name == this.fetchItem) { return true; } } return false; },
         reward: new Reward(Constants.RewardTypes.Item, new itemCreator.Item('Cabbage')),

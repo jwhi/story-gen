@@ -66,11 +66,13 @@ class Character {
         this.items.push(item);
     }
 
-    removeItemFromInventory() {
-        // Need a reliable way to remove a specific item from the inventory
-        // Can use a unique id for all items or can create a system where
-        // items found for a goal completion will have a flag so can remove
-        // a goal items by name.
+    removeItemFromInventory(itemName) {
+        for (var i = 0; i < this.items.length; i++) {
+            if (this.items[i].name == itemName) {
+                this.items = this.items.slice(0, i).concat(this.items.slice(i+1));
+                return;
+            }
+        }
     }
 
     hasGoal(goalToCheck) {
