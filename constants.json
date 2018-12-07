@@ -1,8 +1,8 @@
 {
     "Provisions": {
-        "Initial": 15,
+        "Initial": 25,
         "NeededForSpring": 10,
-        "NeededForSummer": 10,
+        "NeededForSummer": 30,
         "NeededForAutumn": 10,
         "NeededForWinter": 10,
         "NeededDefault": 5,

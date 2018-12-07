@@ -284,6 +284,7 @@ var rules = [{
         } else {
             this.disableRules.push('FindEvent');
         }
+        this.passDay();
         R.restart();
     }
 },{
@@ -367,6 +368,7 @@ var rules = [{
         this.queueOutput(StorySegments.ItemGather.PlacedItemInBag);
 
         this.protagonist.removeGoal(Constants.Goals.FindFlower);
+        this.passDay();
         R.restart();
     }
 },{
@@ -426,7 +428,7 @@ var rules = [{
                trainer.skill = jobReward.rewardObject.skill;
                this.addCharacter(trainer);
             } else if (jobReward.rewardType == Constants.RewardTypes.Item) {
-                this.protagonist.addItemToInventory(jobReward.rewardObject);
+                this.protagonist.addItemToInventory(jobReward.rewardObject, this.world.getCurrentDay());
                 this.queueOutput(StorySegments.Job.ItemReward);
                 this.addCharacter(this.currentJob.giver);
             } else {
