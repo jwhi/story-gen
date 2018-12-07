@@ -1,10 +1,10 @@
 {
     "Provisions": {
         "Initial": 25,
-        "NeededForSpring": 25,
-        "NeededForSummer": 25,
-        "NeededForAutumn": 25,
-        "NeededForWinter": 25,
+        "NeededForSpring": 10,
+        "NeededForSummer": 10,
+        "NeededForAutumn": 10,
+        "NeededForWinter": 10,
         "NeededDefault": 5,
         "UsedPerDay": 1,
         "CanBeFoundInBasicSearch": 3,

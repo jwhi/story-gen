@@ -107,6 +107,14 @@ class Job {
             this.rewardText = options.rewardText;
         }
 
+        if (options.trialText) {
+            this.trialText = options.trialText;
+        }
+
+        if (options.immediateRewardText) {
+            this.immediateRewardText = options.immediateRewardText;
+        }
+
         if (options.dayAssigned) {
             this.dayAssigned = options.dayAssigned;
         }
@@ -146,6 +154,9 @@ var WorldEvents = [
     new Job({
         jobType: Constants.JobTypes.None,
         worldField: Constants.WorldField.Day,
+        giver: new c.SupportingCharacter({
+            opinion: Constants.CharacterOpinions.Friend
+        }),
         assignmentText: StorySegments.Event.CharityFood,
         startingText: "#eventGiver wants to give you food. It will take them a few days to gather what they need.",
         successFunction: function (currentDay) { if (currentDay < (this.dayAssigned + 10)) { return false; } return true; },
@@ -158,7 +169,8 @@ var WorldEvents = [
             opinion: Constants.CharacterOpinions.TownHero
         }),
         protagonistField: Constants.ProtagonistField.FighterSkill,
-        assignmentText: "There is a fighter guild in the town. #hero hears that #eventGiver is the guild's leader",
+        assignmentText: "There is a fighter guild in the town that could help #hero become a true fighter. The guild's leader is #eventGiver.",
+        trialText: "#hero will need to train more before guild master #eventGiver allows them to join.",
         successFunction: function (fighterSkill) { if (fighterSkill >= Constants.Requirements.FighterSkillJoinGuild) { return true; } return false; },
         reward: new Reward(Constants.RewardTypes.JoinGuild, {GuildName: "Fighter", "Rank": 0}),
         rewardText: '#eventGiver is impressed by how much #hero has improved their fighting skills. #eventGiver signs #hero up to be a recruit in the fighter guild in #eventGiverLocation.',

@@ -116,7 +116,6 @@ var rules = [{
     },
     "consequence": function (R) {
         this.flags['searchForJob'] = true;
-        this.queueOutput(`#hero needs to find work before #nextSeason comes in #daysUntilNextSeason days.`)
         R.restart();
     }
 },{
@@ -200,6 +199,8 @@ var rules = [{
         // Only want to display job story text if the fetch to jobCreator worked
         if (this.currentJob) {
             // Story segment about how the protagonist heard about this job
+            
+            this.queueOutput(`#hero needs to find work before #nextSeason.`)
             this.queueOutput(this.currentJob.assignmentText);
 
             // Story segment about getting to meet with the job giver.
@@ -226,6 +227,8 @@ var rules = [{
             this.flags['hasJob'] = true;
         } else {
             // Disable basic job find once the list of jobs is empty
+            
+            this.queueOutput(`There is currently no work to be found in #heroLocation`)
             this.disableRules.push('FindBasicJob');
         }
         
@@ -271,6 +274,10 @@ var rules = [{
                     this.queueOutput(this.lastEvent.rewardText);
                 }
                 this.events.pop();
+            } else {
+                if (this.lastEvent.trialText) {
+                    this.queueOutput(this.lastEvent.trialText);
+                }
             }
         } else {
             this.disableRules.push('FindEvent');

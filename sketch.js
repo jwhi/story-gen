@@ -46,6 +46,12 @@ R.register(generalRules.rules);
 /* Add a Fact with the protagonist's information */
 var initialFact = createFact();
 
+// Story introduction
+console.log('\n');
+console.log(`Our story begins with ${initialFact.protagonist.firstName} ${initialFact.protagonist.lastName}.`);
+console.log(`They have a dream of becoming a fighter after being gifted a sword by their late father.`);
+console.log(`The story begins at the beginning of the medieval era in ${initialFact.protagonist.getCurrentTown()} on a beautiful spring day.`)
+console.log('\n');
 //console.log(`Total rules: ${R.rules.length}\tActive rules: ${R.activeRules.length}`);
 StoryEngine(R, initialFact);
 
