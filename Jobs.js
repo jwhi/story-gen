@@ -145,6 +145,21 @@ var FightingJobs = [
         reward: new Reward(Constants.RewardTypes.SkillIncrease, {skill: "fighter", modifier: 5}),
         rewardText: `#jobGiver explains this flower reminds them of the time time they spent as a soldier, but do not go into further detail. #jobGiver wants to pass on some of their sword fighting tips to #hero.`
     
+    }),
+    new Job({
+        jobType: Constants.JobTypes.Fetch,
+        fetchItem: "cabbage",
+        giver: new c.SupportingCharacter({
+            opinion: Constants.CharacterOpinions.Neighbor,
+            description: "They are the oldest person in town and always happy to help."
+        }),
+        startingText: "#jobGiver's son recently left town and they need help harvesting their small plot of cabbages.",
+        itemFetchedText: "#jobGiver's fields were overgrown with weeds but there are still plenty of healthy cabbages to harvest.",
+        itemTurnIn: "#jobGiver thanks #hero. #jobGiver is now able to fill the empty barrels in their home with the cabbages.",
+        protagonistField: Constants.ProtagonistField.Item,
+        successFunction: function (itemList) { for(var i = 0; i < itemList.length; i++) { if (itemList[i].name == this.fetchItem) { return true; } } return false; },
+        reward: new Reward(Constants.RewardTypes.Item, new itemCreator.Item('Cabbage')),
+        rewardText: '#jobGiver lets #hero keep the largest cabbage from the harvest as a thank you.'
     })
     
 ];
@@ -189,8 +204,15 @@ function getFightingJob(giver, day) {
         var giver = new c.SupportingCharacter(characterOptions);
     }
     if (FightingJobs.length > 0) {
-        var job = FightingJobs.pop();
-        job.giver = giver;
+        var index = utility.getRandomInt(FightingJobs.length)-1;
+        var job = FightingJobs[index];
+        FightingJobs = FightingJobs.slice(0, index).concat(FightingJobs.slice(index+1));
+        
+        if (job.giver) {
+            job.giver.location = giver.location;
+        } else {
+            job.giver = giver;
+        }
         if (day) {
             job.dayAssigned = day;
         }

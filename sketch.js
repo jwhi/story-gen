@@ -53,6 +53,7 @@ console.log(`They have a dream of becoming a fighter after being gifted a sword 
 console.log(`The story begins at the beginning of the medieval era in ${initialFact.protagonist.getCurrentTown()} on a beautiful spring day.`)
 console.log('\n');
 //console.log(`Total rules: ${R.rules.length}\tActive rules: ${R.activeRules.length}`);
+console.log(initialFact);
 StoryEngine(R, initialFact);
 
 /* Create a story! */

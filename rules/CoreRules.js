@@ -48,7 +48,7 @@ var rules = [{
 	"priority": Constants.Priorities.ExitStory,
 	"on" : true,
     "condition": function (R) {
-        R.when(this.end);
+        R.when(this.flags["end"]);
     },
     "consequence": function (R) {
         R.stop();

@@ -19,5 +19,16 @@
         "ItemType": 0,
         "Name": "flower",
         "Description": "A tiny purple and white flower that grows in the spring."
+    },
+    "Cabbage": {
+        "ItemType": 1,
+        "Name": "cabbage",
+        "Description": "It looks very fresh and the leaves are a beautiful green.",
+        "DaysBeforeRotten": 3,
+        "ActionText": "The taste is incredible and fills up #hero.",
+        "RottenActionText": "The vegetable has gone bad, but some parts still seem edible.",
+        "ProvisionsGiven": 7,
+        "ProvisionsGivenRotten": 2,
+        "SicknessChance": 3
     }
 }

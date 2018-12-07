@@ -122,6 +122,7 @@
     "Goals": {
         "BecomeAFighter": 1,
         "FindFlower": 2,
+        "FindCabbage": 3,
         "_comment": "Goals can be given by jobs, set from the beginning, events in the story, etc."
     },
     "Requirements": {

@@ -108,7 +108,7 @@ class SupportingCharacter {
         if (!options) {
             options = {};
         }
-        
+
         if (options.firstName) {
             this.firstName = firstName;
         } else {
@@ -158,7 +158,12 @@ class SupportingCharacter {
     }
 
     getFullDescription() {
+        if (this.description) {
+            return this.description;
+        }
+
         var desc = '';
+        
         switch(this.opinion) {
             case Constants.CharacterOpinions.Neighbor:
                 desc += StorySegments.CharacterDescriptions.BornInTown;
@@ -175,9 +180,6 @@ class SupportingCharacter {
             default:
                 desc += `Not much is known about ${this.firstName}`;
                 break;
-        }
-        if (this.description) {
-            return this.description += `\n${desc}`;
         }
 
         return desc;

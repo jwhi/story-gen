@@ -66,7 +66,7 @@ var rules = [{
     },
     "consequence": function (R) {
         this.queueOutput("Thirty days have passed.");
-        this.end = true;
+        this.flags["end"] = true;
         R.restart();
     }
 },{
@@ -215,6 +215,8 @@ var rules = [{
                 if (this.currentJob.fetchItem == "flower") {
                     // Give the protagonist a goal that will cause them to complete the job
                     this.protagonist.addGoal(Constants.Goals.FindFlower);
+                } else if (this.currentJob.fetchItem == "cabbage") {
+                    this.protagonist.addGoal(Constants.Goals.FindCabbage);
                 }
             }
 
@@ -365,6 +367,29 @@ var rules = [{
         this.queueOutput(StorySegments.ItemGather.PlacedItemInBag);
 
         this.protagonist.removeGoal(Constants.Goals.FindFlower);
+        R.restart();
+    }
+},{
+    "name": "CabbageGoal",
+    "priority": Constants.Priorities.BasicGoalProgress,
+    "on" : true,
+    "condition": function (R) {
+        R.when(this.protagonist.hasGoal(Constants.Goals.FindCabbage));
+    },
+    "consequence": function (R) {
+        this.queueOutput('The small field is just on the edge of town.');
+        
+        var jobItem = new itemCreator.Item(`Cabbage`);
+        
+        if (this.currentJob && this.currentJob.jobType == Constants.JobTypes.Fetch) {
+            this.queueOutput(this.currentJob.itemFetchedText);
+        } else {
+            this.queueOutput('#hero finds a good cabbage that is worth holding onto.');
+        }
+
+        this.protagonist.addItemToInventory(jobItem, this.world.getCurrentDay());
+
+        this.protagonist.removeGoal(Constants.Goals.FindCabbage);
         R.restart();
     }
 },{
