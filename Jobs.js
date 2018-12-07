@@ -40,11 +40,7 @@ class Job {
             // I don't know the best way to handle when no job giver
             // is assigned. This will happen often because of how I handle
             // job creation/storage in the functions down below that fetches jobs
-            this.giver = {
-                firstName: "ERROR",
-                location: "ERROR",
-                area: "ERROR"
-            }
+            this.giver = new c.SupportingCharacter();
         }
 
         if (options.fetchItem) {
@@ -142,10 +138,11 @@ var FightingJobs = [
         rewardText: `#jobGiver explains this flower reminds them of the time time they spent as a soldier, but do not go into further detail. #jobGiver wants to pass on some of their sword fighting tips to #hero.`
     
     })
+    
 ];
 
 var WorldEvents = [
-    // Wait 10 days and someone will come over
+    // After 10 days, someone will come over and give the hero food.
     new Job({
         jobType: Constants.JobTypes.None,
         worldField: Constants.WorldField.Day,
@@ -154,6 +151,18 @@ var WorldEvents = [
         successFunction: function (currentDay) { if (currentDay < (this.dayAssigned + 10)) { return false; } return true; },
         reward: new Reward(Constants.RewardTypes.Item, new itemCreator.Item('SampleFood')),
         rewardText: `#eventGiver finished making food and brought you some.`
+    }),
+    new Job({
+        jobType: Constants.JobTypes.None,
+        giver: new c.SupportingCharacter({
+            opinion: Constants.CharacterOpinions.TownHero
+        }),
+        protagonistField: Constants.ProtagonistField.FighterSkill,
+        assignmentText: "There is a fighter guild in the town. #hero hears that #eventGiver is the guild's leader",
+        successFunction: function (fighterSkill) { if (fighterSkill >= Constants.Requirements.FighterSkillJoinGuild) { return true; } return false; },
+        reward: new Reward(Constants.RewardTypes.JoinGuild, {GuildName: "Fighter", "Rank": 0}),
+        rewardText: '#eventGiver is impressed by how much #hero has improved their fighting skills. #eventGiver signs #hero up to be a recruit in the fighter guild in #eventGiverLocation.',
+        immediateRewardText: '#eventGiver sees that #hero can already handle a sword better than most in #eventGiverLocation. #eventGiver signs #hero up to be a recruit in the fighter guild in #eventGiverLocation.'
     })
 ]
 
@@ -188,14 +197,21 @@ function getEvent(giver, day) {
             //relationship:
             opinion: Constants.CharacterOpinions.Friend
         }
-        var giver = new c.SupportingCharacter(characterOptions);
+        giver = new c.SupportingCharacter(characterOptions);
     }
     if (WorldEvents.length > 0) {
-        var event = WorldEvents.pop();
-        event.giver = giver;
+        var index = utility.getRandomInt(WorldEvents.length)-1;
+        var event = WorldEvents[index];
+        WorldEvents = WorldEvents.slice(0, index).concat(WorldEvents.slice(index+1));
+        if (event.giver) {
+            event.giver.location = giver.location;
+        } else {
+            event.giver = giver;
+        }
         if (day) {
             event.dayAssigned = day;
         }
+
         return event;
     }
 }

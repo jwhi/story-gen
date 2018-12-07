@@ -42,8 +42,16 @@ var rules = [{
         this.passDay();
         this.debug["passedDayCount"] = (this.debug["passedDayCount"] ? this.debug["passedDayCount"] += 1 : this.debug["passedDayCount"] = 1);
         if (this.debug["passedDayCount"] > 2) {
-            this.flags['findEvent'] = true;
+            if (utility.rollDice() >= 3) {
+                this.flags['findEvent'] = true;
+            } else {
+                this.flags['train'] = true;
+            }
         }
+        
+        // If a bit of time passes and they have enough food, then they should train.
+        // If they have done the training quest, that quest giver is marked as a trainer and gives them a bonus
+        // If they haven't they train on their own and don't get much of a bonus.
         R.restart();
     }
 },{
@@ -78,7 +86,7 @@ var rules = [{
         for(var i = 0; i < this.protagonist.items.length; i++) {
             var protagonistItem = this.protagonist.items[i];
             if (protagonistItem.itemType == Constants.ItemTypes.Food) {
-                this.queueOutput(`#hero eats ${protagonistItem} from their bag.`)
+                this.queueOutput(`#hero eats ${protagonistItem.name} from their bag.`)
                 if (protagonistItem.dayReceived + protagonistItem.daysBeforeRotten < this.world.getCurrentDay()) {
                     this.queueOutput(protagonistItem.rottenActionText);
                     this.protagonist.provisions += protagonistItem.provisionsGivenRotten;
@@ -128,11 +136,28 @@ var rules = [{
     "consequence": function (R) {
         this.debug["findProvisionsBasic"] = (this.debug["findProvisionsBasic"] ? this.debug["findProvisionsBasic"] += 1 : this.debug["findProvisionsBasic"] = 1);
         
-        if (this.debug["findProvisionsBasic"] < 3) {
+        if (this.debug["findProvisionsBasic" < 4]) {
+            this.queueOutput('#hero is hungry and needs to find some food.');
             this.queueOutput(`Searching for food in the woods near #heroLocation.`);
-            this.queueOutput(`#hero grabbed some of their favorite berries.`)
+                
+            if (this.debug["findProvisionsBasic"] < 2) {
+                this.queueOutput('#hero is hungry and needs to find some food.');
+                this.queueOutput(`Searching for food in the woods near #heroLocation.`);
+                this.queueOutput(`#hero grabbed some of their favorite berries.`)
+            } else {
+                this.queueOutput(`#hero had to settle for some bland but edible plants.`);
+            }
         } else {
-            this.queueOutput(`#hero had to settle for some bland but edible plants.`);
+            if (utility.rollDice() >= 3) {
+                var otherCharacter = this.getRandomTownPerson();
+                if (otherCharacter) {
+                    this.queueOutput(`#hero has some food with ${otherCharacter.firstName}.`);
+                } else {
+                    // Hero already went and found a lot of food by themselves and there are no town people they know
+                }
+            } else {
+                this.queueOutput('#hero has a meal alone.');
+            }
         }
         this.protagonist.provisions += Constants.Provisions.CanBeFoundInBasicSearch;
         // Can set the flag to false instead of deleting because this flag will most likely occur a lot
@@ -236,12 +261,81 @@ var rules = [{
             this.queueOutput(this.lastEvent.giver.getFullDescription().replace('#jobGiver','#eventGiver'));
 
             this.flags['findEvent'] = false;
+
+            if (this.lastEvent.worldField && this.lastEvent.successFunction(this.world.getValueFromField(this.lastEvent.worldField))
+            || this.lastEvent.protagonistField && this.lastEvent.successFunction(this.protagonist.getValueFromField(this.lastEvent.protagonistField))) {
+                if (this.lastEvent.immediateRewardText) {
+                    this.queueOutput(this.lastEvent.immediateRewardText);
+                } else {
+                    this.queueOutput('#hero had everything they needed.');
+                    this.queueOutput(this.lastEvent.rewardText);
+                }
+                this.events.pop();
+            }
         } else {
             this.disableRules.push('FindEvent');
         }
         R.restart();
     }
 },{
+    "name": "TrainMainSkill",
+    "priority": Constants.Priorities.TrainMainSkill,
+    "on": true,
+    "condition": function (R) {
+        R.when(this.flags['train'])
+    },
+    "consequence": function (R) {
+        
+        var trainer = this.getTrainer('fighter');
+        if (trainer) {
+            this.debug["trainWithTrainer"] = (this.debug["trainWithTrainer"] ? this.debug["trainWithTrainer"] += 1 : this.debug["trainWithTrainer"] = 1);
+            var trainerSessions = this.debug["trainWithTrainer"];
+            this.queueOutput(`#hero asks ${trainer.firstName} to help them train some more.`);
+            var storyOutput = '';
+            switch (trainerSessions) {
+                case 1:
+                    storyOutput += `${trainer.firstName} tells #hero if they really want to become a fighter, then #hero should know it is not easy.`;
+                    storyOutput += `\n#hero left the training session covered in bruises.`;
+                    break;
+                case 2:
+                    storyOutput += `#hero learned how to predict some of ${trainer.firstName}'s moves.`;
+                    break;
+                case 3:
+                    storyOutput += `#hero is becoming light on their feet and can finally hold their own against ${trainer.firstName}`;
+                    break;
+                default:
+                    storyOutput += `${trainer.firstName} passes on more of their fighter knowledge to #hero.`;
+                    break;
+            }
+            storyOutput += `\n#hero thanks ${trainer.firstName} for their time and heads home.`;
+            this.queueOutput(storyOutput);
+            this.protagonist.modifySkillFromName("fighter", Constants.Train.Trainer);
+        } else {
+            this.debug["train"] = (this.debug["train"] ? this.debug["train"] += 1 : this.debug["train"] = 1);
+            var soloSessions = this.debug["train"];
+            var skillLevel = this.protagonist.getValueFromField(Constants.ProtagonistField.FighterSkill);
+            this.queueOutput(`#hero heads to their favorite spot to train by themselves, ${StorySegments.Train.Fighter.SoloTrainingLocation}`);
+            switch (soloSessions) {
+                case 1:
+                case 2:
+                    
+                if (skillLevel == 0) {
+                    this.queueOutput(StorySegments.Train.Fighter.NoSkill);
+                } else if (skillLevel < 5) {
+                    this.queueOutput(StorySegments.Train.Fighter.SomeSkill)
+                }
+                break;
+                default:
+                    this.queueOutput('#hero spends a few hours practicing their fighting.');
+            }
+            this.protagonist.modifySkillFromName("fighter", Constants.Train.Solo);
+        }
+        
+        this.flags['train'] = false;
+        this.passDay();
+        R.restart();
+    }
+}, {
     /************* Start of rules that help the protagonist to accomplish goals *************/
     "name": "FlowerGoal",
     "priority": Constants.Priorities.BasicGoalProgress,
@@ -291,15 +385,24 @@ var rules = [{
             var jobReward = this.currentJob.reward;
             if (jobReward.rewardType == Constants.RewardTypes.SkillIncrease) {
                this.protagonist.modifySkillFromName(jobReward.rewardObject.skill, jobReward.rewardObject.modifier);
+               var trainer = this.currentJob.giver;
+               trainer.skill = jobReward.rewardObject.skill;
+               this.addCharacter(trainer);
             } else if (jobReward.rewardType == Constants.RewardTypes.Item) {
                 this.protagonist.addItemToInventory(jobReward.rewardObject);
                 this.queueOutput(StorySegments.Job.ItemReward);
+                this.addCharacter(this.currentJob.giver);
+            } else {
+                this.addCharacter(this.currentJob.giver);
             }
         }
         
         if (this.currentJob.rewardText) {
             this.queueOutput(this.currentJob.rewardText);
         }
+
+        // Add trainer to the fact here
+        
 
         // Delete this job from the fact after the fact and story
         // finish updating.
@@ -331,6 +434,10 @@ var rules = [{
                 this.protagonist.addItemToInventory(eventReward.rewardObject);
                 this.queueOutput(StorySegments.Job.ItemReward.replace('#jobGiver','#eventGiver'));
             }
+        }
+
+        if (this.lastEvent.giver) {
+            this.addCharacter(this.lastEvent.giver);
         }
         
         

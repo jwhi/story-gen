@@ -31,5 +31,12 @@
 		"Default": "#hero finds #fetchItem and stores it safely on their person.",
 		"FlowerLocation": "There is a large patch of beautiful flowers that #hero can't help but pick.",
 		"PlacedItemInBag": "#hero takes a look at the #item before placing it in their bag. #itemDescription"
+	},
+	"Train": {
+		"Fighter": {
+			"SoloTrainingLocation": "the forests near #heroLocation",
+			"NoSkill": "#hero starts to get comfortable with their old sword. The sword still slips out of their hand at times.",
+			"SomeSkill": "#hero practices swinging their sword for a few hours."
+		}
 	}
 }

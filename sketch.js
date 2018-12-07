@@ -32,6 +32,7 @@ const RuleEngine = require('node-rules');
 const generalRules = require('./rules/GeneralRules.js');
 const coreRules = require('./rules/CoreRules.js');
 const Constants = require('./loadJSON.js').Constants;
+const utility = require('./utility.js');
 const c = require('./Character.js');
 const w = require('./World.js')
 
@@ -62,6 +63,7 @@ function StoryEngine(RE, fact) {
         //console.log(data.debug);
         //console.log("MATCH PATH");
         //console.log(data.matchPath);
+        //console.log(data.characters);
         if (data.end) {
             // If this is the end of the story, exit the function
             //console.log(data)
@@ -110,6 +112,7 @@ function createFact(factInformation) {
     fact.currentRuleFiles = (factInformation && factInformation.currentRuleFiles) ? factInformation.currentRuleFiles : [];
     fact.disableRules = [];
     fact.addRuleFile = [];
+    fact.characters = (factInformation && factInformation.characters) ? factInformation.characters : {};
     fact.output =  (factInformation && factInformation.output) ? factInformation.output : [];
     fact.debug = (factInformation && factInformation.debug) ? factInformation.debug : {};
     
@@ -198,9 +201,68 @@ function createFact(factInformation) {
                     return i;
                 }
             }
+            if (this.events[i].protagonistField) {
+                if (this.events[i].successFunction(this.protagonist.getValueFromField(this.events[i].protagonistField))) {
+                    return i;
+                }
+            }
         }
         return -1;
     };
+
+    fact.addCharacter = function(character) {
+        var characterKey = character.location;
+        if (!this.characters[characterKey]) {
+            this.characters[characterKey] = {};
+        }
+        if (character.skill) {
+            if (!this.characters[characterKey].trainers) {
+                this.characters[characterKey].trainers = [];
+            }
+            if (this.characters[characterKey].trainers.indexOf(character) == -1) {
+                this.characters[characterKey].trainers.push(character);
+                return true;
+            }
+        } else {
+            if (!this.characters[characterKey].townPeople) {
+                this.characters[characterKey].townPeople = [];
+            }
+            if (this.characters[characterKey].townPeople.indexOf(character) == -1) {
+                this.characters[characterKey].townPeople.push(character);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    fact.getTrainer = function(skillName) {
+        var characterKey = this.protagonist.getCurrentTown();
+        var trainersList;
+        if (this.characters[characterKey] && this.characters[characterKey].trainers) {
+            trainersList =  this.characters[characterKey].trainers;
+        } else {
+            return;
+        }
+        
+        for (var i = 0; i , trainersList.length; i++) {
+            if (trainersList[i].skill == skillName) {
+                return trainersList[i];
+            }
+        }
+
+        return;
+
+    }
+
+    fact.getRandomTownPerson = function() {
+        var characterKey = this.protagonist.getCurrentTown();
+        var townPeople = (this.characters[characterKey].townPeople) ? this.characters[characterKey].townPeople : [];
+        if (townPeople.length > 0) {
+            var index = utility.getRandomInt(townPeople.length -1);
+            return townPeople[index];
+        } 
+        return;
+    }
 
     return fact;
 }

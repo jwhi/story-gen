@@ -1,11 +1,11 @@
 {
     "Provisions": {
         "Initial": 25,
-        "NeededForSpring": 15,
-        "NeededForSummer": 15,
+        "NeededForSpring": 25,
+        "NeededForSummer": 25,
         "NeededForAutumn": 25,
-        "NeededForWinter": 35,
-        "NeededDefault": 25,
+        "NeededForWinter": 25,
+        "NeededDefault": 5,
         "UsedPerDay": 1,
         "CanBeFoundInBasicSearch": 3,
         "LowFoodRatio": 0.1,
@@ -60,6 +60,7 @@
         "NeedJob": 8,
         "BasicGoalProgress": 9,
         "FindEvent": 10,
+        "TrainMainSkill": 10,
         "CompleteJob": 11,
         "FindProvisionsBasic": 13,
         "CompleteEvent": 14,
@@ -77,6 +78,7 @@
         "AppreciateAsAPerson": 4,
         "Friend": 5,
         "BestFriend": 6,
+        "TownHero": 7,
         "FamilyFriend": 3,
         "Enemy": -1,
         "EnemyOfFamily": -2
@@ -104,7 +106,8 @@
         "Fetch": 1
     },
     "ProtagonistField": {
-        "Item": 1
+        "Item": 1,
+        "FighterSkill": 2
     },
     "WorldField": {
         "Day": 1,
@@ -113,11 +116,19 @@
     },
     "RewardTypes": {
         "SkillIncrease": 1,
-        "Item": 2
+        "Item": 2,
+        "JoinGuild": 3
     },
     "Goals": {
         "BecomeAFighter": 1,
         "FindFlower": 2,
         "_comment": "Goals can be given by jobs, set from the beginning, events in the story, etc."
+    },
+    "Requirements": {
+        "FighterSkillJoinGuild": 5
+    },
+    "Train": {
+        "Solo": 2,
+        "Trainer": 5
     }
 }

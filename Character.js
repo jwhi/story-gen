@@ -46,6 +46,9 @@ class Character {
         if (fieldName == Constants.ProtagonistField.Item) {
             return this.items;
         }
+        if (fieldName == Constants.ProtagonistField.FighterSkill) {
+            return this.skills["fighter"];
+        }
     }
 
     modifySkillFromName(skillName, modifier) {
@@ -102,6 +105,10 @@ class Character {
  *****/
 class SupportingCharacter {
     constructor(options) {
+        if (!options) {
+            options = {};
+        }
+        
         if (options.firstName) {
             this.firstName = firstName;
         } else {
@@ -161,6 +168,13 @@ class SupportingCharacter {
                 break;
             case Constants.CharacterOpinions.Friend:
                 desc += `${StorySegments.CharacterDescriptions.FriendsRoughTimes}`;
+                break;
+            case Constants.CharacterOpinions.TownHero:
+                desc += `${this.firstName} is known for protecting ${this.location}.`
+                break;
+            default:
+                desc += `Not much is known about ${this.firstName}`;
+                break;
         }
         if (this.description) {
             return this.description += `\n${desc}`;
