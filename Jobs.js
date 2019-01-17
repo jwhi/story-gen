@@ -57,6 +57,7 @@ class Job {
         this.trialText = trialText;
         this.immediateRewardText = immediateRewardText;
         this.dayAssigned = dayAssigned;
+        this.worldField = worldField;
 
         if (fetchItem) {
             this.fetchItem = fetchItem;
@@ -76,8 +77,6 @@ class Job {
             // success check. If this is not included in the options,
             // need to determine from the success function.
         }
-
-        this.worldField = worldField;
 
         if (successFunction) {
             this.successFunction = successFunction;
