@@ -17,6 +17,7 @@
         "InitialConstitution": 0,
         "InitialIntelligence": 0,
         "InitialCharisma": 0,
+        "InitialWisdom": 0,
         "InitialLuck": 0
     },
     "World": {
