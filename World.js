@@ -1,5 +1,4 @@
 "use strict";
-const utility = require('./utility.js');
 const Constants = require('./loadJSON.js').Constants;
 
 class World {
