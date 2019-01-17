@@ -109,28 +109,43 @@ function StoryEngine(RE, fact) {
     });
 }
 
-function createFact(factInformation) {
+ /*
+  Node-Rules would probably allow us to pass the object from the callback function back into
+  the rule engine, but I created this function to create a fact that only has the variables
+  needed to create the story.
+
+  createFact gets called once with no parameters and another with a single object parameter
+  with additional variables that we do not need. Default values helps prevent the generator
+  trying to create a story with missing information.  
+ */
+function createFact({
+    protagonist = new c.Character("John", "FooBar"),
+    world = new w.World(),
+    flags = {},
+    currentRuleFiles = [],
+    characters = {},
+    output = [],
+    debug = {},
+    events = [],
+    currentJob = null,
+    lastEvent = null
+} = {}) {
     var fact = {};
-    fact.protagonist = (factInformation && factInformation.protagonist) ? factInformation.protagonist : new c.Character("Jeremy", "White");
-    fact.world = (factInformation && factInformation.world) ? factInformation.world : new w.World();
-    fact.flags = (factInformation && factInformation.flags) ? factInformation.flags : {};
-    fact.end = false;
-    fact.currentRuleFiles = (factInformation && factInformation.currentRuleFiles) ? factInformation.currentRuleFiles : [];
+    fact.protagonist = protagonist;
+    fact.world = world;
+    fact.flags = flags;
+    fact.currentRuleFiles = currentRuleFiles;
+    fact.characters = characters;
+    fact.output =  output;
+    fact.debug = debug;
+    fact.events = events;
+    fact.currentJob = currentJob;
+    fact.lastEvent = lastEvent;
+
     fact.disableRules = [];
     fact.addRuleFile = [];
-    fact.characters = (factInformation && factInformation.characters) ? factInformation.characters : {};
-    fact.output =  (factInformation && factInformation.output) ? factInformation.output : [];
-    fact.debug = (factInformation && factInformation.debug) ? factInformation.debug : {};
-    
-    if (factInformation && factInformation.currentJob) {
-        fact.currentJob = factInformation.currentJob;
-    }
-    
-    if (factInformation && factInformation.lastEvent) {
-        fact.lastEvent = factInformation.lastEvent;
-    }
+    fact.end = false;
 
-    fact.events = (factInformation && factInformation.events) ? factInformation.events : [];
     fact.passDay = function(daysToPass) {
         if (daysToPass) {
             this.world.passDay(daysToPass);
@@ -272,6 +287,5 @@ function createFact(factInformation) {
         } 
         return;
     }
-
     return fact;
 }

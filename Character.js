@@ -106,57 +106,34 @@ class Character {
  * 
  *****/
 class SupportingCharacter {
-    constructor(options) {
-        if (!options) {
-            options = {};
-        }
-
-        if (options.firstName) {
-            this.firstName = firstName;
-        } else {
-            // Pick random male or female name
-            // Gender doesn't really matter and names are only seperated because that is
-            // how I found the data
-            this.firstName = ((utility.getRandomInt(2) == 2) ? namePicker.getMaleName() : namePicker.getFemaleName())
-        }
-
-        // Not all characters have last names
-        if (options.lastName) {
-            this.lastName = options.lastName;
-        }
-
-        // How does the protagonist know this person
-        if (options.relationship) {
-            this.relationship = options.relationship;
-        }
-
+    constructor({
+        // Pick random male or female name
+        // Gender doesn't really matter and names are only separated because that is
+        // how I found the data
+        firstName = ((utility.getRandomInt(2) == 2) ? namePicker.getMaleName() : namePicker.getFemaleName()),
+        lastName,
+        relationship,
         // The character's opinion of the protagonist
         // All the possible values are in the constants file.
-        if (options.opinion) {
-            this.opinion = options.opinion;
-        } else {
-            this.opinion = Constants.CharacterOpinions.Stranger;
-        }
-
+        opinion = Constants.CharacterOpinions.Stranger,
         // The city where this character is located. If not set now,
         // the location will be set to the when the protagonist first
         // interacts with this character.
-        if (options.location) {
-            this.location = options.location;
-        }
-
-        if (options.area) {
-            this.area = options.area;
-        } else {
-            this.area = "home";
-        }
-
-        if (options.description) {
-            this.description = options.description;
-        }
-
+        location,
+        area = "home",
+        description,
         // Count the number of times the protagonist has talked with this character
-        this.interactions = 0;
+        interactions = 0
+
+    } = {}) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.relationship = relationship;
+        this.opinion = opinion;
+        this.location = location;
+        this.area = area;
+        this.description = description;
+        this.interactions = interactions;
     }
 
     getFullDescription() {

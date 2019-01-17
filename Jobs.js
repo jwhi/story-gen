@@ -28,25 +28,40 @@ class Job {
     // once I start creating a system to create jobs from a file to
     // be loaded in, I want to be able to automatically create the
     // all the information for a job given any information.
-    constructor(options) {
-        if (options.jobType) {
-            this.jobType = options.jobType;
-        } else {
-            this.jobType = Constants.JobTypes.None;
-        }
-        if (options.giver) {
-            this.giver = options.giver;
-        } else {
-            // I don't know the best way to handle when no job giver
-            // is assigned. This will happen often because of how I handle
-            // job creation/storage in the functions down below that fetches jobs
-            this.giver = new c.SupportingCharacter();
-        }
+    constructor({
+        jobType = Constants.JobTypes.None,
+        // I don't know the best way to handle when no job giver
+        // is assigned. This will happen often because of how I handle
+        // job creation/storage in the functions down below that fetches jobs
+        giver = new c.SupportingCharacter(),
+        fetchItem,
+        protagonistField,
+        worldField,
+        successFunction,
+        reward,
+        assignmentText = StorySegments.Job.Rumor,
+        startingText,
+        itemFetchedText,
+        itemTurnIn,
+        rewardText,
+        trialText,
+        immediateRewardText,
+        dayAssigned
+    } = {}) {
+        this.jobType = jobType;
+        this.giver = giver;
+        this.reward = reward;
+        this.assignmentText = assignmentText;
+        this.itemTurnIn = itemTurnIn;
+        this.rewardText = rewardText;
+        this.trialText = trialText;
+        this.immediateRewardText = immediateRewardText;
+        this.dayAssigned = dayAssigned;
 
-        if (options.fetchItem) {
-            this.fetchItem = options.fetchItem;
+        if (fetchItem) {
+            this.fetchItem = fetchItem;
         } else {
-            if (options.jobType == Constants.JobTypes.Fetch) {
+            if (jobType == Constants.JobTypes.Fetch) {
                 this.fetchItem = "ERROR";
             }
         }
@@ -54,69 +69,37 @@ class Job {
         // Used in rule when conditional statement to determine what
         // information from the protagonist within the fact which will
         // then be passed immediately to the jobs success function.
-        if (options.protagonistField != null) {
-            this.protagonistField = options.protagonistField;
+        if (protagonistField != null) {
+            this.protagonistField = protagonistField;
         } else {
-            // This protagonist check is directly related to the
+            // TODO: This protagonist check is directly related to the
             // success check. If this is not included in the options,
             // need to determine from the success function.
         }
 
-        if (options.worldField != null) {
-            this.worldField = options.worldField;
-        }
+        this.worldField = worldField;
 
-        if (options.successFunction) {
-            this.successFunction = options.successFunction;
+        if (successFunction) {
+            this.successFunction = successFunction;
         } else {
-            // Design a way of creating the success test that reflects
+            // TODO: Design a way of creating the success test that reflects
             // the text used for a job.
         }
 
-        if (options.reward) {
-            this.reward = options.reward;
-        }
-
-        if (options.assignmentText) {
-            this.assignmentText = options.assignmentText;
-        } else {
-            this.assignmentText = StorySegments.Job.Rumor;
-        }
-
-        if (options.startingText) {
-            this.startingText = options.startingText;
+        if (startingText) {
+            this.startingText = startingText;
         } else {
             if (this.jobType == Constants.JobTypes.Fetch) {
                 this.startingText = StorySegments.Job.StartFetchJob;
             }
         }
 
-        if (options.itemFetchedText) {
-            this.itemFetchedText = options.itemFetchedText;
+        if (itemFetchedText) {
+            this.itemFetchedText = itemFetchedText;
         } else {
             if (this.jobType == Constants.JobTypes.Fetch) {
                 this.itemFetchedText = StorySegments.ItemGather.Default;
             }
-        }
-
-        if (options.itemTurnIn) {
-            this.itemTurnIn = options.itemTurnIn;
-        }
-
-        if (options.rewardText) {
-            this.rewardText = options.rewardText;
-        }
-
-        if (options.trialText) {
-            this.trialText = options.trialText;
-        }
-
-        if (options.immediateRewardText) {
-            this.immediateRewardText = options.immediateRewardText;
-        }
-
-        if (options.dayAssigned) {
-            this.dayAssigned = options.dayAssigned;
         }
     }
 }
